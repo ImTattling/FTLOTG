@@ -5,40 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0f1115">
+<meta name="theme-color" content="#FFFFFF">
 <title>Workout Tracker</title>
 <style>
   :root {
-    color-scheme: light dark;
-    --bg: #f5f5f7;
-    --card: #ffffff;
-    --text: #1c1c1e;
-    --text-dim: #6e6e73;
-    --border: #e5e5ea;
-    --accent: #ff6b35;
-    --accent-text: #ffffff;
-    --done-bg: #eef9f0;
-    --done-border: #34c759;
-    --danger: #ff3b30;
-    --input-bg: #f2f2f7;
+    color-scheme: light;
+    --bg: #FFFFFF;
+    --card: #F3EDE6;
+    --text: #3B2416;
+    --text-dim: #6E4B34;
+    --border: #E4D6C3;
+    --accent: #8B5A2B;
+    --accent-text: #FFFFFF;
+    --done-bg: #EAD9BE;
+    --done-border: #8B5A2B;
+    --danger: #7A2E1E;
+    --input-bg: #F3EDE6;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f1115;
-      --card: #1c1e24;
-      --text: #f2f2f7;
-      --text-dim: #98989f;
-      --border: #2c2e35;
-      --accent: #ff7a47;
-      --accent-text: #17181c;
-      --done-bg: #12271a;
-      --done-border: #30d158;
-      --danger: #ff453a;
-      --input-bg: #26282f;
-    }
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -360,11 +344,11 @@
   const STORAGE_KEY = 'workout-tracker:workouts';
 
   const CATEGORIES = [
-    { id: 'lifting', label: 'Lifting', color: '#bf5af2' },
-    { id: 'ball-handling', label: 'Ball Handling', color: '#0a84ff' },
-    { id: 'shooting', label: 'Shooting', color: '#ff9f0a' },
-    { id: 'conditioning', label: 'Conditioning', color: '#30d158' },
-    { id: 'knee-rehab', label: 'Knee Rehab', color: '#00c7be' }
+    { id: 'lifting', label: 'Lifting', color: '#3D2817' },
+    { id: 'ball-handling', label: 'Ball Handling', color: '#7A4B23' },
+    { id: 'shooting', label: 'Shooting', color: '#8F4E1B' },
+    { id: 'conditioning', label: 'Conditioning', color: '#6B5842' },
+    { id: 'knee-rehab', label: 'Knee Rehab', color: '#8C5145' }
   ];
   const DEFAULT_CATEGORY = 'ball-handling';
   const FALLBACK_CATEGORY = 'conditioning';
