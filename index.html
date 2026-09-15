@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0f1115">
+<title>Workout Tracker</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --text: #1c1c1e;
+    --text-dim: #6e6e73;
+    --border: #e5e5ea;
+    --accent: #ff6b35;
+    --accent-text: #ffffff;
+    --done-bg: #eef9f0;
+    --done-border: #34c759;
+    --danger: #ff3b30;
+    --input-bg: #f2f2f7;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115;
+      --card: #1c1e24;
+      --text: #f2f2f7;
+      --text-dim: #98989f;
+      --border: #2c2e35;
+      --accent: #ff7a47;
+      --accent-text: #17181c;
+      --done-bg: #12271a;
+      --done-border: #30d158;
+      --danger: #ff453a;
+      --input-bg: #26282f;
+    }
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  header {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    background: var(--bg);
+    padding: 18px 0 10px;
+    z-index: 10;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+
+  main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding-bottom: 48px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .add-form .row {
+    display: flex;
+    gap: 10px;
+  }
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 12px;
+    font-size: 16px;
+    color: var(--text);
+    font-family: inherit;
+  }
+
+  input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  .field { flex: 1; min-width: 0; }
+  .field.small { flex: 0 0 30%; }
+
+  button.primary {
+    appearance: none;
+    border: none;
+    background: var(--accent);
+    color: var(--accent-text);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 13px;
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 2px;
+    cursor: pointer;
+  }
+
+  button.primary:active { opacity: 0.75; }
+
+  section.list-section {
+    margin-top: 28px;
+  }
+
+  h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 10px;
+  }
+
+  .count-badge {
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  ul.items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  li.item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  li.item.done {
+    background: var(--done-bg);
+    border-color: var(--done-border);
+  }
+
+  .check {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--text-dim);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: transparent;
+    font-size: 16px;
+    font-weight: 800;
+    padding: 0;
+  }
+
+  li.item.done .check {
+    border-color: var(--done-border);
+    background: var(--done-border);
+    color: #ffffff;
+  }
+
+  .item-info { flex: 1; min-width: 0; }
+
+  .item-name {
+    font-weight: 600;
+    font-size: 1rem;
+    word-break: break-word;
+  }
+
+  li.item.done .item-name {
+    text-decoration: line-through;
+    color: var(--text-dim);
+  }
+
+  .item-meta {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-top: 2px;
+  }
+
+  .delete-btn {
+    flex: 0 0 auto;
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 4px;
+    cursor: pointer;
+  }
+
+  .empty-state {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 24px 8px;
+  }
+
+  .history-date {
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 18px 0 8px;
+  }
+
+  .history-date:first-child { margin-top: 0; }
+</style>
+</head>
+<body>
+<header>
+  <main style="padding-bottom:0;">
+    <h1>💪 Workout Tracker</h1>
+    <div class="subtitle">Log it, crush it, check it off.</div>
+  </main>
+</header>
+
+<main>
+  <div class="card">
+    <form class="add-form" id="add-form">
+      <div class="field">
+        <label for="name">Exercise</label>
+        <input id="name" type="text" placeholder="e.g. Push ups" autocomplete="off" required>
+      </div>
+      <div class="row">
+        <div class="field small">
+          <label for="sets">Sets</label>
+          <input id="sets" type="number" inputmode="numeric" min="1" placeholder="3" required>
+        </div>
+        <div class="field small">
+          <label for="reps">Reps</label>
+          <input id="reps" type="number" inputmode="numeric" min="1" placeholder="12" required>
+        </div>
+      </div>
+      <button type="submit" class="primary">Add Workout</button>
+    </form>
+  </div>
+
+  <section class="list-section">
+    <h2>Today <span class="count-badge" id="today-count"></span></h2>
+    <ul class="items" id="today-list"></ul>
+    <div class="empty-state" id="today-empty" hidden>No workouts yet — add one above.</div>
+  </section>
+
+  <section class="list-section">
+    <h2>History</h2>
+    <div id="history-container"></div>
+    <div class="empty-state" id="history-empty" hidden>Completed workouts will show up here.</div>
+  </section>
+</main>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'workout-tracker:workouts';
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function save(workouts) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(workouts));
+    } catch (e) {}
+  }
+
+  let workouts = load();
+
+  const form = document.getElementById('add-form');
+  const nameInput = document.getElementById('name');
+  const setsInput = document.getElementById('sets');
+  const repsInput = document.getElementById('reps');
+
+  const todayList = document.getElementById('today-list');
+  const todayEmpty = document.getElementById('today-empty');
+  const todayCount = document.getElementById('today-count');
+  const historyContainer = document.getElementById('history-container');
+  const historyEmpty = document.getElementById('history-empty');
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function todayKey(date) {
+    const d = new Date(date);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function formatDateLabel(key) {
+    const todayK = todayKey(Date.now());
+    const yesterdayK = todayKey(Date.now() - 86400000);
+    if (key === todayK) return 'Today';
+    if (key === yesterdayK) return 'Yesterday';
+    const d = new Date(key + 'T00:00:00');
+    return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  function render() {
+    // Pending (not done) workouts, newest first
+    const pending = workouts.filter(w => !w.done).sort((a, b) => b.createdAt - a.createdAt);
+    todayList.innerHTML = '';
+    pending.forEach(w => todayList.appendChild(renderItem(w)));
+    todayEmpty.hidden = pending.length > 0;
+    todayCount.textContent = pending.length ? `(${pending.length})` : '';
+
+    // Completed workouts, grouped by completion date, newest first
+    const done = workouts.filter(w => w.done).sort((a, b) => b.completedAt - a.completedAt);
+    historyContainer.innerHTML = '';
+    historyEmpty.hidden = done.length > 0;
+
+    const groups = new Map();
+    done.forEach(w => {
+      const key = todayKey(w.completedAt);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(w);
+    });
+
+    groups.forEach((items, key) => {
+      const label = document.createElement('div');
+      label.className = 'history-date';
+      label.textContent = formatDateLabel(key);
+      historyContainer.appendChild(label);
+
+      const ul = document.createElement('ul');
+      ul.className = 'items';
+      items.forEach(w => ul.appendChild(renderItem(w)));
+      historyContainer.appendChild(ul);
+    });
+  }
+
+  function renderItem(w) {
+    const li = document.createElement('li');
+    li.className = 'item' + (w.done ? ' done' : '');
+
+    const check = document.createElement('button');
+    check.className = 'check';
+    check.type = 'button';
+    check.textContent = '✓';
+    check.setAttribute('aria-label', w.done ? 'Mark as not done' : 'Mark as done');
+    check.addEventListener('click', () => toggleDone(w.id));
+
+    const info = document.createElement('div');
+    info.className = 'item-info';
+    const nameEl = document.createElement('div');
+    nameEl.className = 'item-name';
+    nameEl.textContent = w.name;
+    const metaEl = document.createElement('div');
+    metaEl.className = 'item-meta';
+    metaEl.textContent = `${w.sets} sets × ${w.reps} reps`;
+    info.appendChild(nameEl);
+    info.appendChild(metaEl);
+
+    const del = document.createElement('button');
+    del.className = 'delete-btn';
+    del.type = 'button';
+    del.textContent = 'Delete';
+    del.addEventListener('click', () => removeWorkout(w.id));
+
+    li.appendChild(check);
+    li.appendChild(info);
+    li.appendChild(del);
+    return li;
+  }
+
+  function toggleDone(id) {
+    const w = workouts.find(w => w.id === id);
+    if (!w) return;
+    w.done = !w.done;
+    w.completedAt = w.done ? Date.now() : null;
+    save(workouts);
+    render();
+  }
+
+  function removeWorkout(id) {
+    workouts = workouts.filter(w => w.id !== id);
+    save(workouts);
+    render();
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const sets = parseInt(setsInput.value, 10);
+    const reps = parseInt(repsInput.value, 10);
+    if (!name || !sets || !reps) return;
+
+    workouts.push({
+      id: uid(),
+      name,
+      sets,
+      reps,
+      done: false,
+      createdAt: Date.now(),
+      completedAt: null
+    });
+    save(workouts);
+    render();
+    form.reset();
+    nameInput.focus();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
