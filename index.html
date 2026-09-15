@@ -113,7 +113,7 @@
     display: block;
   }
 
-  input {
+  input, select {
     width: 100%;
     background: var(--input-bg);
     border: 1px solid var(--border);
@@ -124,7 +124,16 @@
     font-family: inherit;
   }
 
-  input:focus {
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%), linear-gradient(135deg, var(--text-dim) 50%, transparent 50%);
+    background-position: calc(100% - 18px) center, calc(100% - 13px) center;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+
+  input:focus, select:focus {
     outline: 2px solid var(--accent);
     outline-offset: -1px;
   }
@@ -230,6 +239,44 @@
     margin-top: 2px;
   }
 
+  .category-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-top: 6px;
+  }
+
+  .filter-chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 2px 2px;
+    margin: 14px 0 -4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filter-chips::-webkit-scrollbar { display: none; }
+
+  .chip {
+    flex: 0 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .chip.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+
   .delete-btn {
     flex: 0 0 auto;
     background: transparent;
@@ -275,6 +322,10 @@
         <label for="name">Exercise</label>
         <input id="name" type="text" placeholder="e.g. Push ups" autocomplete="off" required>
       </div>
+      <div class="field">
+        <label for="category">Category</label>
+        <select id="category"></select>
+      </div>
       <div class="row">
         <div class="field small">
           <label for="sets">Sets</label>
@@ -288,6 +339,8 @@
       <button type="submit" class="primary">Add Workout</button>
     </form>
   </div>
+
+  <div class="filter-chips" id="filter-chips"></div>
 
   <section class="list-section">
     <h2>Today <span class="count-badge" id="today-count"></span></h2>
@@ -305,6 +358,22 @@
 <script>
 (function () {
   const STORAGE_KEY = 'workout-tracker:workouts';
+
+  const CATEGORIES = [
+    { id: 'ball-handling', label: 'Ball Handling', color: '#0a84ff' },
+    { id: 'shooting', label: 'Shooting', color: '#ff9f0a' },
+    { id: 'strength', label: 'Strength', color: '#bf5af2' },
+    { id: 'cardio', label: 'Cardio', color: '#ff375f' },
+    { id: 'conditioning', label: 'Conditioning', color: '#30d158' },
+    { id: 'other', label: 'Other', color: '#8e8e93' }
+  ];
+  const DEFAULT_CATEGORY = CATEGORIES[0].id;
+
+  function categoryInfo(id) {
+    return CATEGORIES.find(c => c.id === id) || CATEGORIES[CATEGORIES.length - 1];
+  }
+
+  let activeCategory = 'all';
 
   function load() {
     try {
@@ -325,14 +394,40 @@
 
   const form = document.getElementById('add-form');
   const nameInput = document.getElementById('name');
+  const categorySelect = document.getElementById('category');
   const setsInput = document.getElementById('sets');
   const repsInput = document.getElementById('reps');
 
+  const filterChips = document.getElementById('filter-chips');
   const todayList = document.getElementById('today-list');
   const todayEmpty = document.getElementById('today-empty');
   const todayCount = document.getElementById('today-count');
   const historyContainer = document.getElementById('history-container');
   const historyEmpty = document.getElementById('history-empty');
+
+  CATEGORIES.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.label;
+    categorySelect.appendChild(opt);
+  });
+  categorySelect.value = DEFAULT_CATEGORY;
+
+  function renderChips() {
+    filterChips.innerHTML = '';
+    const all = [{ id: 'all', label: 'All' }, ...CATEGORIES];
+    all.forEach(c => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'chip' + (activeCategory === c.id ? ' active' : '');
+      chip.textContent = c.label;
+      chip.addEventListener('click', () => {
+        activeCategory = c.id;
+        render();
+      });
+      filterChips.appendChild(chip);
+    });
+  }
 
   function uid() {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -353,15 +448,19 @@
   }
 
   function render() {
+    renderChips();
+
+    const inFilter = w => activeCategory === 'all' || (w.category || DEFAULT_CATEGORY) === activeCategory;
+
     // Pending (not done) workouts, newest first
-    const pending = workouts.filter(w => !w.done).sort((a, b) => b.createdAt - a.createdAt);
+    const pending = workouts.filter(w => !w.done && inFilter(w)).sort((a, b) => b.createdAt - a.createdAt);
     todayList.innerHTML = '';
     pending.forEach(w => todayList.appendChild(renderItem(w)));
     todayEmpty.hidden = pending.length > 0;
     todayCount.textContent = pending.length ? `(${pending.length})` : '';
 
     // Completed workouts, grouped by completion date, newest first
-    const done = workouts.filter(w => w.done).sort((a, b) => b.completedAt - a.completedAt);
+    const done = workouts.filter(w => w.done && inFilter(w)).sort((a, b) => b.completedAt - a.completedAt);
     historyContainer.innerHTML = '';
     historyEmpty.hidden = done.length > 0;
 
@@ -404,8 +503,17 @@
     const metaEl = document.createElement('div');
     metaEl.className = 'item-meta';
     metaEl.textContent = `${w.sets} sets × ${w.reps} reps`;
+
+    const cat = categoryInfo(w.category || DEFAULT_CATEGORY);
+    const badgeEl = document.createElement('div');
+    badgeEl.className = 'category-badge';
+    badgeEl.textContent = cat.label;
+    badgeEl.style.background = cat.color + '26';
+    badgeEl.style.color = cat.color;
+
     info.appendChild(nameEl);
     info.appendChild(metaEl);
+    info.appendChild(badgeEl);
 
     const del = document.createElement('button');
     del.className = 'delete-btn';
@@ -437,6 +545,7 @@
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const name = nameInput.value.trim();
+    const category = categorySelect.value || DEFAULT_CATEGORY;
     const sets = parseInt(setsInput.value, 10);
     const reps = parseInt(repsInput.value, 10);
     if (!name || !sets || !reps) return;
@@ -444,6 +553,7 @@
     workouts.push({
       id: uid(),
       name,
+      category,
       sets,
       reps,
       done: false,
@@ -453,6 +563,7 @@
     save(workouts);
     render();
     form.reset();
+    categorySelect.value = DEFAULT_CATEGORY;
     nameInput.focus();
   });
 
