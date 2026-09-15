@@ -360,17 +360,26 @@
   const STORAGE_KEY = 'workout-tracker:workouts';
 
   const CATEGORIES = [
+    { id: 'lifting', label: 'Lifting', color: '#bf5af2' },
     { id: 'ball-handling', label: 'Ball Handling', color: '#0a84ff' },
     { id: 'shooting', label: 'Shooting', color: '#ff9f0a' },
-    { id: 'strength', label: 'Strength', color: '#bf5af2' },
-    { id: 'cardio', label: 'Cardio', color: '#ff375f' },
     { id: 'conditioning', label: 'Conditioning', color: '#30d158' },
-    { id: 'other', label: 'Other', color: '#8e8e93' }
+    { id: 'knee-rehab', label: 'Knee Rehab', color: '#00c7be' }
   ];
-  const DEFAULT_CATEGORY = CATEGORIES[0].id;
+  const DEFAULT_CATEGORY = 'ball-handling';
+  const FALLBACK_CATEGORY = 'conditioning';
+
+  // Maps category ids retired in earlier versions of the app to their
+  // closest replacement, so workouts already saved in a visitor's
+  // localStorage keep a valid category after this rename.
+  const CATEGORY_MIGRATIONS = {
+    strength: 'lifting',
+    cardio: 'conditioning',
+    other: 'conditioning'
+  };
 
   function categoryInfo(id) {
-    return CATEGORIES.find(c => c.id === id) || CATEGORIES[CATEGORIES.length - 1];
+    return CATEGORIES.find(c => c.id === id) || CATEGORIES.find(c => c.id === FALLBACK_CATEGORY);
   }
 
   let activeCategory = 'all';
@@ -378,7 +387,17 @@
   function load() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : [];
+      const validIds = new Set(CATEGORIES.map(c => c.id));
+      let migrated = false;
+      parsed.forEach(w => {
+        if (!validIds.has(w.category)) {
+          w.category = CATEGORY_MIGRATIONS[w.category] || FALLBACK_CATEGORY;
+          migrated = true;
+        }
+      });
+      if (migrated) save(parsed);
+      return parsed;
     } catch (e) {
       return [];
     }
