@@ -419,6 +419,333 @@
   }
 
   .history-date:first-child { margin-top: 0; }
+
+  button.secondary {
+    appearance: none;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  button.primary:disabled,
+  button.secondary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .st-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .st-title { font-weight: 700; font-size: 1rem; }
+
+  .st-sub {
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+
+  .st-pill {
+    flex: 0 0 auto;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 7px;
+    border-radius: 3px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+
+  .st-pill.locked {
+    background: var(--done-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .st-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .st-setting-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .st-stepper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+  }
+
+  .st-step-btn {
+    appearance: none;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 19px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+  }
+
+  .st-step-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .st-step-input {
+    width: 58px;
+    text-align: center;
+    padding: 8px 4px;
+    font-weight: 700;
+    background: var(--bg);
+  }
+
+  .st-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .st-actions > * { flex: 1; }
+
+  .st-cancel {
+    appearance: none;
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 10px 4px 0;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .st-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+  }
+
+  .st-progress-track {
+    height: 6px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .st-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 0 3px 3px 0;
+  }
+
+  .st-station { text-align: center; padding: 18px 0 2px; }
+
+  .st-station-type {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+  }
+
+  .st-station-spot {
+    font-size: 1.45rem;
+    font-weight: 800;
+    margin: 5px 0 3px;
+    letter-spacing: -0.01em;
+  }
+
+  .st-station-shots { color: var(--text-dim); font-size: 0.85rem; }
+
+  .st-makes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .st-makes .st-step-btn { width: 54px; height: 54px; font-size: 24px; }
+
+  .st-makes .st-step-input {
+    width: 82px;
+    font-size: 26px;
+    padding: 10px 4px;
+  }
+
+  .st-makes-caption {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+  }
+
+  .st-live-pct {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-dim);
+  }
+
+  .st-timer {
+    font-size: 2.6rem;
+    font-weight: 800;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    margin: 12px 0 2px;
+  }
+
+  .st-timer-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    min-height: 1.1em;
+  }
+
+  .st-block { margin-top: 18px; }
+
+  .st-block-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .st-row { margin-bottom: 11px; }
+
+  .st-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .st-row-label { font-size: 0.85rem; font-weight: 600; }
+
+  .st-row-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .st-row-count {
+    color: var(--text-dim);
+    font-weight: 500;
+    font-size: 0.78rem;
+    margin-left: 4px;
+  }
+
+  .st-bar-track {
+    height: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .st-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .st-delta { font-weight: 700; margin-left: 6px; font-size: 0.78rem; }
+  .st-delta.up { color: var(--accent); }
+  .st-delta.down { color: var(--danger); }
+  .st-delta.flat { color: var(--text-dim); }
+
+  .st-callout { display: flex; gap: 8px; margin-top: 14px; }
+
+  .st-callout > div {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 8px;
+    background: var(--bg);
+    min-width: 0;
+  }
+
+  .st-callout-label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+  }
+
+  .st-callout-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-top: 3px;
+    word-break: break-word;
+  }
+
+  .st-callout-pct { font-size: 0.78rem; color: var(--text-dim); font-weight: 600; }
+
+  .st-overall { text-align: center; padding: 4px 0 2px; }
+
+  .st-overall-value {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .st-overall-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+  }
+
+  .st-note {
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    margin-top: 12px;
+    line-height: 1.45;
+  }
+
+  .st-steps {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -486,6 +813,11 @@
     <h2>History</h2>
     <div id="history-container"></div>
     <div class="empty-state" id="history-empty" hidden>Completed workouts will show up here.</div>
+  </section>
+
+  <section class="list-section">
+    <h2>Skill Tests</h2>
+    <div class="card" id="skill-test-card"></div>
   </section>
 </main>
 
@@ -581,6 +913,7 @@
   const pirChartWrap = document.getElementById('pir-chart-wrap');
   const restDayBtn = document.getElementById('rest-day-btn');
   const restDayStatus = document.getElementById('rest-day-status');
+  const skillTestCard = document.getElementById('skill-test-card');
 
   CATEGORIES.forEach(c => {
     const opt = document.createElement('option');
@@ -948,8 +1281,638 @@
     restDayStatus.textContent = `${pir.restDaysUsedThisWeek}/${MAX_REST_DAYS_PER_WEEK} rest days used this week`;
   }
 
+  // ---------- Skill tests ----------
+
+  const SKILL_TESTS_KEY = 'workout-tracker:skill-tests';
+  const SHOTS_PER_SPOT_KEY = 'workout-tracker:shots-per-spot';
+  const SKILL_TEST_PROGRESS_KEY = 'workout-tracker:skill-test-progress';
+  const DEFAULT_SHOTS_PER_SPOT = 10;
+  const MIN_SHOTS_PER_SPOT = 1;
+  const MAX_SHOTS_PER_SPOT = 50;
+  const RETEST_LOCK_DAYS = 14;
+  const BALL_HANDLING_SECONDS = 60;
+
+  const COURT_SPOTS = [
+    { id: 'left-corner', label: 'Left corner' },
+    { id: 'left-wing', label: 'Left wing' },
+    { id: 'top-key', label: 'Top of the key' },
+    { id: 'right-wing', label: 'Right wing' },
+    { id: 'right-corner', label: 'Right corner' }
+  ];
+
+  const FREE_THROW_SPOT = { id: 'free-throw-line', label: 'Free throw line' };
+
+  const SHOT_TYPES = [
+    { id: 'free-throw', label: 'Free throws', short: 'Free throws', spots: [FREE_THROW_SPOT] },
+    { id: 'three-catch', label: 'Three-pointers, catch & shoot', short: '3PT catch & shoot', spots: COURT_SPOTS },
+    { id: 'three-dribble', label: 'Three-pointers, off the dribble', short: '3PT off the dribble', spots: COURT_SPOTS },
+    { id: 'mid-catch', label: 'Mid-range, catch & shoot', short: 'Mid-range catch & shoot', spots: COURT_SPOTS },
+    { id: 'mid-dribble', label: 'Mid-range, off the dribble', short: 'Mid-range off the dribble', spots: COURT_SPOTS }
+  ];
+
+  const ALL_SPOTS = [FREE_THROW_SPOT].concat(COURT_SPOTS);
+  const SHOOTING_STATION_COUNT = SHOT_TYPES.reduce((n, t) => n + t.spots.length, 0);
+
+  let ballTimer = null;
+
+  function loadSkillTests() {
+    try {
+      const raw = localStorage.getItem(SKILL_TESTS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveSkillTests(tests) {
+    try {
+      localStorage.setItem(SKILL_TESTS_KEY, JSON.stringify(tests));
+    } catch (e) {}
+  }
+
+  function clampShots(n) {
+    if (!Number.isFinite(n)) return DEFAULT_SHOTS_PER_SPOT;
+    return Math.min(MAX_SHOTS_PER_SPOT, Math.max(MIN_SHOTS_PER_SPOT, Math.round(n)));
+  }
+
+  function loadShotsPerSpot() {
+    try {
+      const raw = localStorage.getItem(SHOTS_PER_SPOT_KEY);
+      return raw === null ? DEFAULT_SHOTS_PER_SPOT : clampShots(parseInt(raw, 10));
+    } catch (e) {
+      return DEFAULT_SHOTS_PER_SPOT;
+    }
+  }
+
+  function saveShotsPerSpot(n) {
+    try {
+      localStorage.setItem(SHOTS_PER_SPOT_KEY, String(n));
+    } catch (e) {}
+  }
+
+  // An in-progress test is persisted so a phone reload mid-session
+  // doesn't discard stations already logged.
+  function loadTestProgress() {
+    try {
+      const raw = localStorage.getItem(SKILL_TEST_PROGRESS_KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      return parsed && Array.isArray(parsed.stations) && parsed.stations.length ? parsed : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function saveTestProgress(progress) {
+    try {
+      localStorage.setItem(SKILL_TEST_PROGRESS_KEY, JSON.stringify(progress));
+    } catch (e) {}
+  }
+
+  function clearTestProgress() {
+    try {
+      localStorage.removeItem(SKILL_TEST_PROGRESS_KEY);
+    } catch (e) {}
+  }
+
+  let activeTest = loadTestProgress();
+
+  function buildStations(shotsPerSpot) {
+    const stations = [];
+    SHOT_TYPES.forEach(type => {
+      type.spots.forEach(spot => {
+        stations.push({ kind: 'shooting', typeId: type.id, spotId: spot.id, shots: shotsPerSpot, makes: 0 });
+      });
+    });
+    stations.push({ kind: 'ball-handling', seconds: BALL_HANDLING_SECONDS, reps: 0 });
+    return stations;
+  }
+
+  function spotLabel(id) {
+    const spot = ALL_SPOTS.find(s => s.id === id);
+    return spot ? spot.label : id;
+  }
+
+  function typeLabel(id, short) {
+    const type = SHOT_TYPES.find(t => t.id === id);
+    if (!type) return id;
+    return short ? type.short : type.label;
+  }
+
+  function pct(makes, shots) {
+    return shots > 0 ? (makes / shots) * 100 : null;
+  }
+
+  function formatPct(value) {
+    return value === null ? '—' : Math.round(value) + '%';
+  }
+
+  function formatClock(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m + ':' + String(s).padStart(2, '0');
+  }
+
+  function formatCountdown(ms) {
+    if (ms <= 0) return 'now';
+    const totalMinutes = Math.ceil(ms / 60000);
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+    if (days > 0) return days + 'd ' + hours + 'h';
+    if (hours > 0) return hours + 'h ' + minutes + 'm';
+    return minutes + 'm';
+  }
+
+  function retestStatus() {
+    const tests = loadSkillTests();
+    if (tests.length === 0) return { tests, locked: false, isFirst: true, remainingMs: 0 };
+    const last = tests[tests.length - 1];
+    const unlockAt = last.completedAt + RETEST_LOCK_DAYS * 86400000;
+    const remainingMs = unlockAt - Date.now();
+    return { tests, locked: remainingMs > 0, isFirst: false, remainingMs, unlockAt };
+  }
+
+  // Percentages (not raw makes) drive every comparison, so changing the
+  // shots-per-spot setting between tests keeps the matchup fair.
+  function summarizeTest(test) {
+    const shooting = test.stations.filter(s => s.kind === 'shooting');
+    const totals = rows => rows.reduce((acc, r) => {
+      acc.makes += r.makes;
+      acc.shots += r.shots;
+      return acc;
+    }, { makes: 0, shots: 0 });
+
+    const byType = SHOT_TYPES.map(type => {
+      const t = totals(shooting.filter(s => s.typeId === type.id));
+      return { id: type.id, label: type.short, makes: t.makes, shots: t.shots, pct: pct(t.makes, t.shots) };
+    }).filter(r => r.shots > 0);
+
+    const bySpot = COURT_SPOTS.map(spot => {
+      const t = totals(shooting.filter(s => s.spotId === spot.id));
+      return { id: spot.id, label: spot.label, makes: t.makes, shots: t.shots, pct: pct(t.makes, t.shots) };
+    }).filter(r => r.shots > 0);
+
+    const overall = totals(shooting);
+    const ranked = bySpot.filter(r => r.pct !== null).slice().sort((a, b) => b.pct - a.pct);
+    const ballStation = test.stations.find(s => s.kind === 'ball-handling');
+
+    return {
+      byType,
+      bySpot,
+      overall: { makes: overall.makes, shots: overall.shots, pct: pct(overall.makes, overall.shots) },
+      strongest: ranked.length ? ranked[0] : null,
+      weakest: ranked.length ? ranked[ranked.length - 1] : null,
+      ballHandlingReps: ballStation ? ballStation.reps : null
+    };
+  }
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function buildStepper(opts) {
+    const wrap = el('div', 'st-stepper');
+    const minus = el('button', 'st-step-btn', '−');
+    minus.type = 'button';
+    minus.setAttribute('aria-label', 'Decrease ' + (opts.ariaLabel || 'value'));
+
+    const input = document.createElement('input');
+    input.className = 'st-step-input';
+    input.type = 'number';
+    input.inputMode = 'numeric';
+    input.min = String(opts.min);
+    input.max = String(opts.max);
+    input.value = String(opts.value);
+    if (opts.ariaLabel) input.setAttribute('aria-label', opts.ariaLabel);
+
+    const plus = el('button', 'st-step-btn', '+');
+    plus.type = 'button';
+    plus.setAttribute('aria-label', 'Increase ' + (opts.ariaLabel || 'value'));
+
+    let value = opts.value;
+
+    function sync(next, fromInput) {
+      const clamped = Math.min(opts.max, Math.max(opts.min, Number.isFinite(next) ? Math.round(next) : opts.min));
+      value = clamped;
+      if (!fromInput || input.value !== String(clamped)) input.value = String(clamped);
+      minus.disabled = clamped <= opts.min;
+      plus.disabled = clamped >= opts.max;
+      opts.onChange(clamped);
+    }
+
+    minus.addEventListener('click', () => sync(value - 1));
+    plus.addEventListener('click', () => sync(value + 1));
+    input.addEventListener('input', () => {
+      if (input.value === '') return;
+      sync(parseInt(input.value, 10), true);
+    });
+    input.addEventListener('blur', () => sync(parseInt(input.value, 10)));
+
+    minus.disabled = value <= opts.min;
+    plus.disabled = value >= opts.max;
+
+    wrap.appendChild(minus);
+    wrap.appendChild(input);
+    wrap.appendChild(plus);
+    return wrap;
+  }
+
+  function diffPct(current, baseline) {
+    if (current === null || baseline === null || baseline === undefined) return null;
+    return current - baseline;
+  }
+
+  function deltaEl(delta, unit) {
+    const span = el('span', 'st-delta');
+    if (delta === null) {
+      span.classList.add('flat');
+      span.textContent = ' —';
+      return span;
+    }
+    const rounded = Math.round(delta);
+    if (rounded > 0) {
+      span.classList.add('up');
+      span.textContent = ' ▲ +' + rounded + unit;
+    } else if (rounded < 0) {
+      span.classList.add('down');
+      span.textContent = ' ▼ −' + Math.abs(rounded) + unit;
+    } else {
+      span.classList.add('flat');
+      span.textContent = ' – 0' + unit;
+    }
+    return span;
+  }
+
+  function resultRow(row, baseRow) {
+    const wrap = el('div', 'st-row');
+    const top = el('div', 'st-row-top');
+    top.appendChild(el('span', 'st-row-label', row.label));
+
+    const value = el('span', 'st-row-value');
+    value.appendChild(document.createTextNode(formatPct(row.pct)));
+    value.appendChild(el('span', 'st-row-count', row.makes + '/' + row.shots));
+    if (baseRow) value.appendChild(deltaEl(diffPct(row.pct, baseRow.pct), 'pt'));
+    top.appendChild(value);
+    wrap.appendChild(top);
+
+    const track = el('div', 'st-bar-track');
+    const fill = el('div', 'st-bar-fill');
+    fill.style.width = (row.pct === null ? 0 : row.pct) + '%';
+    track.appendChild(fill);
+    wrap.appendChild(track);
+    return wrap;
+  }
+
+  function renderTestResults(test, baseline) {
+    const frag = document.createDocumentFragment();
+    const summary = summarizeTest(test);
+    const isBaseline = !baseline || baseline.id === test.id;
+    const baseSummary = isBaseline ? null : summarizeTest(baseline);
+    const findBase = (list, id) => (baseSummary ? list.find(r => r.id === id) : null);
+
+    const headBlock = el('div', 'st-block');
+    headBlock.appendChild(el('div', 'st-block-label', isBaseline ? 'Baseline results' : 'Latest test vs baseline'));
+
+    const overall = el('div', 'st-overall');
+    const overallValue = el('div', 'st-overall-value');
+    overallValue.appendChild(document.createTextNode(formatPct(summary.overall.pct)));
+    if (baseSummary) overallValue.appendChild(deltaEl(diffPct(summary.overall.pct, baseSummary.overall.pct), 'pt'));
+    overall.appendChild(overallValue);
+    overall.appendChild(el('div', 'st-overall-label', 'Overall · ' + summary.overall.makes + '/' + summary.overall.shots + ' made'));
+    headBlock.appendChild(overall);
+
+    if (summary.strongest && summary.weakest) {
+      const callout = el('div', 'st-callout');
+      const strong = el('div');
+      strong.appendChild(el('div', 'st-callout-label', 'Strongest spot'));
+      strong.appendChild(el('div', 'st-callout-value', summary.strongest.label));
+      strong.appendChild(el('div', 'st-callout-pct', formatPct(summary.strongest.pct)));
+      const weak = el('div');
+      weak.appendChild(el('div', 'st-callout-label', 'Weakest spot'));
+      weak.appendChild(el('div', 'st-callout-value', summary.weakest.label));
+      weak.appendChild(el('div', 'st-callout-pct', formatPct(summary.weakest.pct)));
+      callout.appendChild(strong);
+      callout.appendChild(weak);
+      headBlock.appendChild(callout);
+    }
+    frag.appendChild(headBlock);
+
+    const typeBlock = el('div', 'st-block');
+    typeBlock.appendChild(el('div', 'st-block-label', 'By shot type'));
+    summary.byType.forEach(row => typeBlock.appendChild(resultRow(row, findBase(baseSummary ? baseSummary.byType : [], row.id))));
+    frag.appendChild(typeBlock);
+
+    const spotBlock = el('div', 'st-block');
+    spotBlock.appendChild(el('div', 'st-block-label', 'By spot · all shot types'));
+    summary.bySpot.forEach(row => spotBlock.appendChild(resultRow(row, findBase(baseSummary ? baseSummary.bySpot : [], row.id))));
+    frag.appendChild(spotBlock);
+
+    const ballBlock = el('div', 'st-block');
+    ballBlock.appendChild(el('div', 'st-block-label', 'Ball handling'));
+    const ballRow = el('div', 'st-row-top');
+    ballRow.appendChild(el('span', 'st-row-label', BALL_HANDLING_SECONDS + '-second test'));
+    const ballValue = el('span', 'st-row-value');
+    ballValue.appendChild(document.createTextNode((summary.ballHandlingReps === null ? 0 : summary.ballHandlingReps) + ' reps'));
+    if (baseSummary && baseSummary.ballHandlingReps !== null && summary.ballHandlingReps !== null) {
+      ballValue.appendChild(deltaEl(summary.ballHandlingReps - baseSummary.ballHandlingReps, ''));
+    }
+    ballRow.appendChild(ballValue);
+    ballBlock.appendChild(ballRow);
+    frag.appendChild(ballBlock);
+
+    const note = el('div', 'st-note');
+    note.textContent = 'Taken ' + formatDateLabel(todayKey(test.completedAt)) + ' · ' + test.shotsPerSpot + ' shots per spot'
+      + (isBaseline ? ' · this is your baseline.' : '. Comparisons use percentages, so they stay fair if you change shots per spot.');
+    frag.appendChild(note);
+
+    return frag;
+  }
+
+  function renderSkillTestIdle() {
+    const status = retestStatus();
+    const tests = status.tests;
+    const latest = tests.length ? tests[tests.length - 1] : null;
+    const baseline = tests.length ? tests[0] : null;
+
+    const head = el('div', 'st-head');
+    const headText = el('div');
+    headText.appendChild(el('div', 'st-title', status.isFirst ? 'Baseline test' : 'Retest'));
+    const sub = el('div', 'st-sub');
+    if (status.isFirst) {
+      sub.textContent = 'Sets your starting point. The app walks you through one station at a time.';
+    } else if (status.locked) {
+      sub.textContent = 'Retests unlock ' + RETEST_LOCK_DAYS + ' days after your last test, so each comparison covers real training time.';
+    } else {
+      sub.textContent = 'Same test, same order. Results are compared against your baseline.';
+    }
+    headText.appendChild(sub);
+    head.appendChild(headText);
+    if (!status.isFirst) {
+      head.appendChild(el('span', 'st-pill' + (status.locked ? ' locked' : ''), status.locked ? 'Locked' : 'Available'));
+    }
+    skillTestCard.appendChild(head);
+
+    const steps = el('ol', 'st-steps');
+    SHOT_TYPES.forEach(type => {
+      const count = type.spots.length;
+      steps.appendChild(el('li', null, type.label + (count > 1 ? ' — ' + count + ' spots' : '')));
+    });
+    steps.appendChild(el('li', null, BALL_HANDLING_SECONDS + '-second ball handling test'));
+    skillTestCard.appendChild(steps);
+
+    const setting = el('div', 'st-setting');
+    setting.appendChild(el('span', 'st-setting-label', 'Shots per spot'));
+    const totalNote = el('div', 'st-note');
+    const describeTotal = n => SHOOTING_STATION_COUNT + ' shooting stations · ' + (SHOOTING_STATION_COUNT * n)
+      + ' shots total, plus the ' + BALL_HANDLING_SECONDS + '-second ball handling test.';
+    totalNote.textContent = describeTotal(loadShotsPerSpot());
+    setting.appendChild(buildStepper({
+      value: loadShotsPerSpot(),
+      min: MIN_SHOTS_PER_SPOT,
+      max: MAX_SHOTS_PER_SPOT,
+      ariaLabel: 'Shots per spot',
+      onChange: value => {
+        saveShotsPerSpot(value);
+        totalNote.textContent = describeTotal(value);
+      }
+    }));
+    skillTestCard.appendChild(setting);
+    skillTestCard.appendChild(totalNote);
+
+    const actions = el('div', 'st-actions');
+    const startBtn = el('button', 'primary', status.isFirst ? 'Start baseline test' : 'Start retest');
+    startBtn.type = 'button';
+    startBtn.id = 'st-start-btn';
+    startBtn.disabled = status.locked;
+    startBtn.addEventListener('click', startTest);
+    actions.appendChild(startBtn);
+    skillTestCard.appendChild(actions);
+
+    if (status.locked) {
+      const lockNote = el('div', 'st-note');
+      lockNote.appendChild(document.createTextNode('Unlocks in '));
+      const countdown = el('strong', null, formatCountdown(status.remainingMs));
+      countdown.id = 'st-countdown';
+      lockNote.appendChild(countdown);
+      lockNote.appendChild(document.createTextNode(' · last test: ' + formatDateLabel(todayKey(latest.completedAt)) + '.'));
+      skillTestCard.appendChild(lockNote);
+    }
+
+    if (latest) skillTestCard.appendChild(renderTestResults(latest, baseline));
+  }
+
+  function currentStation() {
+    if (!activeTest) return null;
+    return activeTest.stations[activeTest.index];
+  }
+
+  function updateTimerDisplay() {
+    const station = currentStation();
+    const display = document.getElementById('st-timer-display');
+    if (display) {
+      display.textContent = formatClock(ballTimer ? ballTimer.remaining : (station ? station.seconds : BALL_HANDLING_SECONDS));
+    }
+    const btn = document.getElementById('st-timer-btn');
+    if (btn) {
+      if (ballTimer && ballTimer.id) btn.textContent = 'Stop';
+      else if (ballTimer && ballTimer.remaining === 0) btn.textContent = 'Reset timer';
+      else if (ballTimer) btn.textContent = 'Resume';
+      else btn.textContent = 'Start ' + BALL_HANDLING_SECONDS + 's';
+    }
+    const note = document.getElementById('st-timer-note');
+    if (note) {
+      note.textContent = ballTimer && ballTimer.remaining === 0 ? "Time's up — log your reps below." : '';
+    }
+  }
+
+  function stopBallTimer() {
+    if (ballTimer && ballTimer.id) {
+      clearInterval(ballTimer.id);
+      ballTimer.id = null;
+    }
+  }
+
+  function toggleBallTimer() {
+    const station = currentStation();
+    if (!station || station.kind !== 'ball-handling') return;
+
+    if (ballTimer && ballTimer.id) {
+      stopBallTimer();
+      updateTimerDisplay();
+      return;
+    }
+    if (ballTimer && ballTimer.remaining === 0) {
+      ballTimer = null;
+      updateTimerDisplay();
+      return;
+    }
+    if (!ballTimer) ballTimer = { remaining: station.seconds, id: null };
+    ballTimer.id = setInterval(() => {
+      ballTimer.remaining = Math.max(0, ballTimer.remaining - 1);
+      if (ballTimer.remaining === 0) stopBallTimer();
+      updateTimerDisplay();
+    }, 1000);
+    updateTimerDisplay();
+  }
+
+  function goToStation(index) {
+    stopBallTimer();
+    ballTimer = null;
+    activeTest.index = Math.min(activeTest.stations.length - 1, Math.max(0, index));
+    saveTestProgress(activeTest);
+    renderSkillTests();
+  }
+
+  function startTest() {
+    const shotsPerSpot = loadShotsPerSpot();
+    activeTest = {
+      startedAt: Date.now(),
+      shotsPerSpot,
+      index: 0,
+      stations: buildStations(shotsPerSpot)
+    };
+    saveTestProgress(activeTest);
+    renderSkillTests();
+  }
+
+  function cancelTest() {
+    if (!window.confirm('Cancel this test? Stations you already logged will be discarded.')) return;
+    stopBallTimer();
+    ballTimer = null;
+    activeTest = null;
+    clearTestProgress();
+    renderSkillTests();
+  }
+
+  function finishTest() {
+    stopBallTimer();
+    ballTimer = null;
+    const tests = loadSkillTests();
+    tests.push({
+      id: uid(),
+      completedAt: Date.now(),
+      shotsPerSpot: activeTest.shotsPerSpot,
+      stations: activeTest.stations
+    });
+    saveSkillTests(tests);
+    activeTest = null;
+    clearTestProgress();
+    renderSkillTests();
+  }
+
+  function renderActiveTest() {
+    const stations = activeTest.stations;
+    const index = Math.min(activeTest.index, stations.length - 1);
+    const station = stations[index];
+    const isLast = index === stations.length - 1;
+
+    const progressLabel = el('div', 'st-progress-label');
+    progressLabel.appendChild(el('span', null, 'Station ' + (index + 1) + ' of ' + stations.length));
+    progressLabel.appendChild(el('span', null, station.kind === 'ball-handling' ? 'Ball handling' : typeLabel(station.typeId, true)));
+    skillTestCard.appendChild(progressLabel);
+
+    const track = el('div', 'st-progress-track');
+    const fill = el('div', 'st-progress-fill');
+    fill.style.width = (((index + 1) / stations.length) * 100).toFixed(1) + '%';
+    track.appendChild(fill);
+    skillTestCard.appendChild(track);
+
+    if (station.kind === 'shooting') {
+      const stationEl = el('div', 'st-station');
+      stationEl.appendChild(el('div', 'st-station-type', typeLabel(station.typeId)));
+      stationEl.appendChild(el('div', 'st-station-spot', spotLabel(station.spotId)));
+      stationEl.appendChild(el('div', 'st-station-shots', station.shots + ' shots'));
+      skillTestCard.appendChild(stationEl);
+
+      const makes = el('div', 'st-makes');
+      makes.appendChild(el('div', 'st-makes-caption', 'Shots made'));
+      const livePct = el('div', 'st-live-pct', formatPct(pct(station.makes, station.shots)));
+      makes.appendChild(buildStepper({
+        value: station.makes,
+        min: 0,
+        max: station.shots,
+        ariaLabel: 'Shots made',
+        onChange: value => {
+          station.makes = value;
+          livePct.textContent = formatPct(pct(value, station.shots));
+          saveTestProgress(activeTest);
+        }
+      }));
+      makes.appendChild(livePct);
+      skillTestCard.appendChild(makes);
+    } else {
+      const stationEl = el('div', 'st-station');
+      stationEl.appendChild(el('div', 'st-station-type', 'Ball handling'));
+      stationEl.appendChild(el('div', 'st-station-spot', BALL_HANDLING_SECONDS + '-second test'));
+      stationEl.appendChild(el('div', 'st-station-shots', 'Run your ball handling routine, then log the reps you completed.'));
+      skillTestCard.appendChild(stationEl);
+
+      const timer = el('div', 'st-timer');
+      timer.id = 'st-timer-display';
+      skillTestCard.appendChild(timer);
+
+      const timerNote = el('div', 'st-timer-note');
+      timerNote.id = 'st-timer-note';
+      skillTestCard.appendChild(timerNote);
+
+      const timerActions = el('div', 'st-actions');
+      const timerBtn = el('button', 'secondary');
+      timerBtn.type = 'button';
+      timerBtn.id = 'st-timer-btn';
+      timerBtn.addEventListener('click', toggleBallTimer);
+      timerActions.appendChild(timerBtn);
+      skillTestCard.appendChild(timerActions);
+
+      const reps = el('div', 'st-makes');
+      reps.appendChild(el('div', 'st-makes-caption', 'Reps completed'));
+      reps.appendChild(buildStepper({
+        value: station.reps,
+        min: 0,
+        max: 999,
+        ariaLabel: 'Reps completed',
+        onChange: value => {
+          station.reps = value;
+          saveTestProgress(activeTest);
+        }
+      }));
+      skillTestCard.appendChild(reps);
+      updateTimerDisplay();
+    }
+
+    const actions = el('div', 'st-actions');
+    const back = el('button', 'secondary', 'Back');
+    back.type = 'button';
+    back.id = 'st-back-btn';
+    back.disabled = index === 0;
+    back.addEventListener('click', () => goToStation(index - 1));
+    const next = el('button', 'primary', isLast ? 'Finish test' : 'Next');
+    next.type = 'button';
+    next.id = 'st-next-btn';
+    next.addEventListener('click', () => (isLast ? finishTest() : goToStation(index + 1)));
+    actions.appendChild(back);
+    actions.appendChild(next);
+    skillTestCard.appendChild(actions);
+
+    const cancel = el('button', 'st-cancel', 'Cancel test');
+    cancel.type = 'button';
+    cancel.id = 'st-cancel-btn';
+    cancel.addEventListener('click', cancelTest);
+    skillTestCard.appendChild(cancel);
+  }
+
+  function renderSkillTests() {
+    skillTestCard.innerHTML = '';
+    if (activeTest) renderActiveTest();
+    else renderSkillTestIdle();
+  }
+
   function render() {
     renderPIR();
+    renderSkillTests();
     renderChips();
 
     const inFilter = w => activeCategory === 'all' || (w.category || DEFAULT_CATEGORY) === activeCategory;
@@ -1045,6 +2008,15 @@
   }
 
   restDayBtn.addEventListener('click', toggleRestDay);
+
+  // Keeps the retest countdown live, and re-renders the moment it unlocks.
+  setInterval(() => {
+    const countdown = document.getElementById('st-countdown');
+    if (!countdown) return;
+    const status = retestStatus();
+    if (!status.locked) renderSkillTests();
+    else countdown.textContent = formatCountdown(status.remainingMs);
+  }, 60000);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
