@@ -617,11 +617,84 @@
   }
 
   .st-timer {
-    font-size: 2.6rem;
+    font-size: 3.4rem;
     font-weight: 800;
     text-align: center;
     font-variant-numeric: tabular-nums;
-    margin: 12px 0 2px;
+    line-height: 1.05;
+    margin: 2px 0;
+  }
+
+  .st-drill-phase {
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-top: 14px;
+  }
+
+  .st-drill-phase.resting { color: var(--text-dim); }
+
+  .st-hand-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .st-hand-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .st-hand-col .st-step-btn { width: 42px; height: 46px; font-size: 21px; }
+  .st-hand-col .st-step-input { width: 54px; font-size: 21px; padding: 10px 2px; }
+
+  .st-weak {
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 9px 10px;
+    background: var(--bg);
+    margin-bottom: 14px;
+  }
+
+  .st-weak-value {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-top: 3px;
+  }
+
+  .st-weak-hand { color: var(--danger); }
+
+  .st-weak-note {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .st-hand-line {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+    font-size: 0.76rem;
+    color: var(--text-dim);
+  }
+
+  .st-hand.weak {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  .st-substeps {
+    margin: 4px 0 0;
+    padding-left: 16px;
+    font-size: 0.76rem;
   }
 
   .st-timer-note {
@@ -1290,7 +1363,22 @@
   const MIN_SHOTS_PER_SPOT = 1;
   const MAX_SHOTS_PER_SPOT = 50;
   const RETEST_LOCK_DAYS = 14;
-  const BALL_HANDLING_SECONDS = 60;
+  const DRILL_SECONDS = 60;
+  const DRILL_REST_SECONDS = 15;
+
+  const BALL_DRILLS = [
+    { id: 'pound-high', label: 'Pound dribbles, high' },
+    { id: 'pound-mid', label: 'Pound dribbles, mid' },
+    { id: 'pound-low', label: 'Pound dribbles, low' },
+    { id: 'in-and-outs', label: 'In and outs', split: { right: 'Right hand', left: 'Left hand' } },
+    { id: 'between-legs', label: 'Between the legs', split: { right: 'Starting right', left: 'Starting left' } },
+    { id: 'behind-back', label: 'Behind the back' },
+    {
+      id: 'combo',
+      label: 'Combo sequence',
+      note: 'Pound, in and out, crossover, between the legs, behind the back. Each full sequence counts as 1 rep.'
+    }
+  ];
 
   const COURT_SPOTS = [
     { id: 'left-corner', label: 'Left corner' },
@@ -1313,7 +1401,38 @@
   const ALL_SPOTS = [FREE_THROW_SPOT].concat(COURT_SPOTS);
   const SHOOTING_STATION_COUNT = SHOT_TYPES.reduce((n, t) => n + t.spots.length, 0);
 
-  let ballTimer = null;
+  let drillClock = null;
+  let audioCtx = null;
+
+  function drillInfo(id) {
+    return BALL_DRILLS.find(d => d.id === id) || null;
+  }
+
+  // Synthesized so the page stays a single file with no audio assets.
+  // Created on a user gesture (the Start button) so iOS unlocks playback.
+  function playBeep(count, freq, durationMs) {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const tone = freq || 880;
+      const dur = (durationMs || 160) / 1000;
+      for (let i = 0; i < count; i++) {
+        const at = audioCtx.currentTime + i * (dur + 0.09);
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = tone;
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(0.35, at + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(at);
+        osc.stop(at + dur + 0.03);
+      }
+    } catch (e) {}
+  }
 
   function loadSkillTests() {
     try {
@@ -1384,7 +1503,16 @@
         stations.push({ kind: 'shooting', typeId: type.id, spotId: spot.id, shots: shotsPerSpot, makes: 0 });
       });
     });
-    stations.push({ kind: 'ball-handling', seconds: BALL_HANDLING_SECONDS, reps: 0 });
+    BALL_DRILLS.forEach(drill => {
+      const station = { kind: 'ball-handling', drillId: drill.id, seconds: DRILL_SECONDS };
+      if (drill.split) {
+        station.repsRight = 0;
+        station.repsLeft = 0;
+      } else {
+        station.reps = 0;
+      }
+      stations.push(station);
+    });
     return stations;
   }
 
@@ -1455,7 +1583,6 @@
 
     const overall = totals(shooting);
     const ranked = bySpot.filter(r => r.pct !== null).slice().sort((a, b) => b.pct - a.pct);
-    const ballStation = test.stations.find(s => s.kind === 'ball-handling');
 
     return {
       byType,
@@ -1463,8 +1590,50 @@
       overall: { makes: overall.makes, shots: overall.shots, pct: pct(overall.makes, overall.shots) },
       strongest: ranked.length ? ranked[0] : null,
       weakest: ranked.length ? ranked[ranked.length - 1] : null,
-      ballHandlingReps: ballStation ? ballStation.reps : null
+      ballHandling: summarizeBallHandling(test)
     };
+  }
+
+  // Handles both the current seven-drill circuit and the single
+  // ball-handling station saved by earlier versions of the app.
+  function summarizeBallHandling(test) {
+    const stations = test.stations.filter(s => s.kind === 'ball-handling');
+    if (!stations.length) return { drills: [], legacy: false, hasHands: false, right: 0, left: 0, weakHand: null };
+
+    if (stations.length === 1 && !stations[0].drillId) {
+      return {
+        legacy: true,
+        hasHands: false,
+        right: 0,
+        left: 0,
+        weakHand: null,
+        drills: [{ id: 'legacy', label: '60-second test', reps: stations[0].reps || 0, split: null }]
+      };
+    }
+
+    let right = 0;
+    let left = 0;
+    let hasHands = false;
+
+    const drills = stations.map(station => {
+      const info = drillInfo(station.drillId);
+      const label = info ? info.label : station.drillId;
+      if (info && info.split) {
+        const r = station.repsRight || 0;
+        const l = station.repsLeft || 0;
+        hasHands = true;
+        right += r;
+        left += l;
+        return { id: station.drillId, label, reps: r + l, right: r, left: l, split: info.split };
+      }
+      return { id: station.drillId, label, reps: station.reps || 0, split: null };
+    });
+
+    let weakHand = null;
+    if (hasHands && right !== left) weakHand = right < left ? 'right' : 'left';
+    else if (hasHands) weakHand = 'even';
+
+    return { drills, legacy: false, hasHands, right, left, weakHand };
   }
 
   function el(tag, className, text) {
@@ -1611,18 +1780,60 @@
     summary.bySpot.forEach(row => spotBlock.appendChild(resultRow(row, findBase(baseSummary ? baseSummary.bySpot : [], row.id))));
     frag.appendChild(spotBlock);
 
-    const ballBlock = el('div', 'st-block');
-    ballBlock.appendChild(el('div', 'st-block-label', 'Ball handling'));
-    const ballRow = el('div', 'st-row-top');
-    ballRow.appendChild(el('span', 'st-row-label', BALL_HANDLING_SECONDS + '-second test'));
-    const ballValue = el('span', 'st-row-value');
-    ballValue.appendChild(document.createTextNode((summary.ballHandlingReps === null ? 0 : summary.ballHandlingReps) + ' reps'));
-    if (baseSummary && baseSummary.ballHandlingReps !== null && summary.ballHandlingReps !== null) {
-      ballValue.appendChild(deltaEl(summary.ballHandlingReps - baseSummary.ballHandlingReps, ''));
+    const ball = summary.ballHandling;
+    const baseBall = baseSummary ? baseSummary.ballHandling : null;
+    if (ball.drills.length) {
+      const ballBlock = el('div', 'st-block');
+      ballBlock.appendChild(el('div', 'st-block-label', 'Ball handling · ' + DRILL_SECONDS + 's per drill'));
+
+      if (ball.hasHands) {
+        const weak = el('div', 'st-weak');
+        const weakLabel = el('div', 'st-callout-label', 'Weak hand');
+        weak.appendChild(weakLabel);
+        if (ball.weakHand === 'even') {
+          weak.appendChild(el('div', 'st-weak-value', 'Even · ' + ball.right + ' reps each side'));
+        } else {
+          const value = el('div', 'st-weak-value');
+          value.appendChild(el('span', 'st-weak-hand', ball.weakHand === 'right' ? 'Right' : 'Left'));
+          const strongTotal = ball.weakHand === 'right' ? ball.left : ball.right;
+          const weakTotal = ball.weakHand === 'right' ? ball.right : ball.left;
+          const gap = strongTotal > 0 ? Math.round(((strongTotal - weakTotal) / strongTotal) * 100) : 0;
+          value.appendChild(document.createTextNode(' · ' + weakTotal + ' vs ' + strongTotal + ' reps (' + gap + '% behind)'));
+          weak.appendChild(value);
+        }
+        weak.appendChild(el('div', 'st-weak-note', 'Across in and outs and between the legs.'));
+        ballBlock.appendChild(weak);
+      }
+
+      ball.drills.forEach(drill => {
+        const baseDrill = baseBall && !baseBall.legacy ? baseBall.drills.find(d => d.id === drill.id) : null;
+        const row = el('div', 'st-row');
+        const top = el('div', 'st-row-top');
+        top.appendChild(el('span', 'st-row-label', drill.label));
+        const value = el('span', 'st-row-value');
+        value.appendChild(document.createTextNode(drill.reps + ' reps'));
+        if (baseDrill) value.appendChild(deltaEl(drill.reps - baseDrill.reps, ''));
+        top.appendChild(value);
+        row.appendChild(top);
+
+        if (drill.split) {
+          const hands = el('div', 'st-hand-line');
+          const rightSpan = el('span', ball.weakHand === 'right' ? 'st-hand weak' : 'st-hand',
+            drill.split.right + ': ' + drill.right);
+          const leftSpan = el('span', ball.weakHand === 'left' ? 'st-hand weak' : 'st-hand',
+            drill.split.left + ': ' + drill.left);
+          hands.appendChild(rightSpan);
+          hands.appendChild(leftSpan);
+          row.appendChild(hands);
+        }
+        ballBlock.appendChild(row);
+      });
+
+      if (baseBall && baseBall.legacy) {
+        ballBlock.appendChild(el('div', 'st-note', 'Your baseline used the earlier single ball handling test, so drill-by-drill comparison starts from this test.'));
+      }
+      frag.appendChild(ballBlock);
     }
-    ballRow.appendChild(ballValue);
-    ballBlock.appendChild(ballRow);
-    frag.appendChild(ballBlock);
 
     const note = el('div', 'st-note');
     note.textContent = 'Taken ' + formatDateLabel(todayKey(test.completedAt)) + ' · ' + test.shotsPerSpot + ' shots per spot'
@@ -1661,14 +1872,21 @@
       const count = type.spots.length;
       steps.appendChild(el('li', null, type.label + (count > 1 ? ' — ' + count + ' spots' : '')));
     });
-    steps.appendChild(el('li', null, BALL_HANDLING_SECONDS + '-second ball handling test'));
+    const ballStep = el('li', null, 'Ball handling — ' + BALL_DRILLS.length + ' timed drills, ' + DRILL_SECONDS + 's each');
+    const drillList = el('ol', 'st-substeps');
+    BALL_DRILLS.forEach(drill => {
+      drillList.appendChild(el('li', null, drill.label + (drill.split ? ' (30s / 30s)' : '')));
+    });
+    ballStep.appendChild(drillList);
+    steps.appendChild(ballStep);
     skillTestCard.appendChild(steps);
 
     const setting = el('div', 'st-setting');
     setting.appendChild(el('span', 'st-setting-label', 'Shots per spot'));
     const totalNote = el('div', 'st-note');
     const describeTotal = n => SHOOTING_STATION_COUNT + ' shooting stations · ' + (SHOOTING_STATION_COUNT * n)
-      + ' shots total, plus the ' + BALL_HANDLING_SECONDS + '-second ball handling test.';
+      + ' shots total, plus ' + BALL_DRILLS.length + ' ball handling drills of ' + DRILL_SECONDS + 's each with '
+      + DRILL_REST_SECONDS + 's rest between them.';
     totalNote.textContent = describeTotal(loadShotsPerSpot());
     setting.appendChild(buildStepper({
       value: loadShotsPerSpot(),
@@ -1710,58 +1928,128 @@
     return activeTest.stations[activeTest.index];
   }
 
-  function updateTimerDisplay() {
+  // Remaining time comes from wall-clock rather than a tick counter, so a
+  // throttled background tab can't drift the drill short or long.
+  function drillRemainingMs() {
+    if (!drillClock) return 0;
+    if (drillClock.paused) return drillClock.pausedRemaining;
+    return Math.max(0, drillClock.endsAt - Date.now());
+  }
+
+  function clearDrillClock() {
+    if (drillClock && drillClock.intervalId) clearInterval(drillClock.intervalId);
+    drillClock = null;
+  }
+
+  function drillPhaseLabel() {
+    if (!drillClock) return 'Ready';
+    if (drillClock.mode === 'rest') return 'Rest';
     const station = currentStation();
-    const display = document.getElementById('st-timer-display');
-    if (display) {
-      display.textContent = formatClock(ballTimer ? ballTimer.remaining : (station ? station.seconds : BALL_HANDLING_SECONDS));
+    const drill = station ? drillInfo(station.drillId) : null;
+    if (drill && drill.split) {
+      return drillRemainingMs() > drillClock.totalMs / 2 ? drill.split.right : drill.split.left;
     }
-    const btn = document.getElementById('st-timer-btn');
-    if (btn) {
-      if (ballTimer && ballTimer.id) btn.textContent = 'Stop';
-      else if (ballTimer && ballTimer.remaining === 0) btn.textContent = 'Reset timer';
-      else if (ballTimer) btn.textContent = 'Resume';
-      else btn.textContent = 'Start ' + BALL_HANDLING_SECONDS + 's';
-    }
-    const note = document.getElementById('st-timer-note');
-    if (note) {
-      note.textContent = ballTimer && ballTimer.remaining === 0 ? "Time's up — log your reps below." : '';
-    }
+    return 'Go';
   }
 
-  function stopBallTimer() {
-    if (ballTimer && ballTimer.id) {
-      clearInterval(ballTimer.id);
-      ballTimer.id = null;
-    }
+  function updateDrillDisplay() {
+    const clock = document.getElementById('st-drill-clock');
+    if (clock) clock.textContent = formatClock(Math.ceil(drillRemainingMs() / 1000));
+    const phase = document.getElementById('st-drill-phase');
+    if (phase) phase.textContent = drillPhaseLabel();
   }
 
-  function toggleBallTimer() {
+  function nextStationIsDrill() {
+    if (!activeTest) return false;
+    const next = activeTest.stations[activeTest.index + 1];
+    return !!next && next.kind === 'ball-handling';
+  }
+
+  function startDrillTimer() {
     const station = currentStation();
     if (!station || station.kind !== 'ball-handling') return;
+    clearDrillClock();
+    const totalMs = station.seconds * 1000;
+    drillClock = {
+      mode: 'drill',
+      totalMs,
+      endsAt: Date.now() + totalMs,
+      firedHalf: false,
+      paused: false,
+      pausedRemaining: 0,
+      intervalId: setInterval(tickDrill, 200)
+    };
+    playBeep(1);
+    renderSkillTests();
+  }
 
-    if (ballTimer && ballTimer.id) {
-      stopBallTimer();
-      updateTimerDisplay();
+  function startRestTimer() {
+    clearDrillClock();
+    const totalMs = DRILL_REST_SECONDS * 1000;
+    drillClock = {
+      mode: 'rest',
+      totalMs,
+      endsAt: Date.now() + totalMs,
+      firedHalf: true,
+      paused: false,
+      pausedRemaining: 0,
+      intervalId: setInterval(tickDrill, 200)
+    };
+    renderSkillTests();
+  }
+
+  function tickDrill() {
+    if (!drillClock || drillClock.paused) return;
+    const remaining = drillRemainingMs();
+
+    if (drillClock.mode === 'drill' && !drillClock.firedHalf && remaining <= drillClock.totalMs / 2) {
+      drillClock.firedHalf = true;
+      playBeep(2);
+    }
+
+    if (remaining <= 0) {
+      if (drillClock.mode === 'drill') {
+        playBeep(3, 560, 220);
+        const rest = nextStationIsDrill();
+        clearDrillClock();
+        if (rest) startRestTimer();
+        else renderSkillTests();
+      } else {
+        clearDrillClock();
+        advanceToNextDrill();
+      }
       return;
     }
-    if (ballTimer && ballTimer.remaining === 0) {
-      ballTimer = null;
-      updateTimerDisplay();
+    updateDrillDisplay();
+  }
+
+  function advanceToNextDrill() {
+    if (!activeTest) return;
+    const nextIndex = activeTest.index + 1;
+    if (nextIndex >= activeTest.stations.length) {
+      renderSkillTests();
       return;
     }
-    if (!ballTimer) ballTimer = { remaining: station.seconds, id: null };
-    ballTimer.id = setInterval(() => {
-      ballTimer.remaining = Math.max(0, ballTimer.remaining - 1);
-      if (ballTimer.remaining === 0) stopBallTimer();
-      updateTimerDisplay();
-    }, 1000);
-    updateTimerDisplay();
+    activeTest.index = nextIndex;
+    saveTestProgress(activeTest);
+    if (activeTest.stations[nextIndex].kind === 'ball-handling') startDrillTimer();
+    else renderSkillTests();
+  }
+
+  function toggleDrillPause() {
+    if (!drillClock) return;
+    if (drillClock.paused) {
+      drillClock.endsAt = Date.now() + drillClock.pausedRemaining;
+      drillClock.paused = false;
+    } else {
+      drillClock.pausedRemaining = drillRemainingMs();
+      drillClock.paused = true;
+    }
+    renderSkillTests();
   }
 
   function goToStation(index) {
-    stopBallTimer();
-    ballTimer = null;
+    clearDrillClock();
     activeTest.index = Math.min(activeTest.stations.length - 1, Math.max(0, index));
     saveTestProgress(activeTest);
     renderSkillTests();
@@ -1781,16 +2069,14 @@
 
   function cancelTest() {
     if (!window.confirm('Cancel this test? Stations you already logged will be discarded.')) return;
-    stopBallTimer();
-    ballTimer = null;
+    clearDrillClock();
     activeTest = null;
     clearTestProgress();
     renderSkillTests();
   }
 
   function finishTest() {
-    stopBallTimer();
-    ballTimer = null;
+    clearDrillClock();
     const tests = loadSkillTests();
     tests.push({
       id: uid(),
@@ -1812,7 +2098,10 @@
 
     const progressLabel = el('div', 'st-progress-label');
     progressLabel.appendChild(el('span', null, 'Station ' + (index + 1) + ' of ' + stations.length));
-    progressLabel.appendChild(el('span', null, station.kind === 'ball-handling' ? 'Ball handling' : typeLabel(station.typeId, true)));
+    const progressContext = station.kind === 'ball-handling'
+      ? 'Ball handling ' + (BALL_DRILLS.findIndex(d => d.id === station.drillId) + 1) + '/' + BALL_DRILLS.length
+      : typeLabel(station.typeId, true);
+    progressLabel.appendChild(el('span', null, progressContext));
     skillTestCard.appendChild(progressLabel);
 
     const track = el('div', 'st-progress-track');
@@ -1845,42 +2134,97 @@
       makes.appendChild(livePct);
       skillTestCard.appendChild(makes);
     } else {
+      const drill = drillInfo(station.drillId);
+      const drillNumber = BALL_DRILLS.findIndex(d => d.id === station.drillId) + 1;
+      const resting = !!drillClock && drillClock.mode === 'rest';
+
       const stationEl = el('div', 'st-station');
-      stationEl.appendChild(el('div', 'st-station-type', 'Ball handling'));
-      stationEl.appendChild(el('div', 'st-station-spot', BALL_HANDLING_SECONDS + '-second test'));
-      stationEl.appendChild(el('div', 'st-station-shots', 'Run your ball handling routine, then log the reps you completed.'));
+      stationEl.appendChild(el('div', 'st-station-type', 'Ball handling · drill ' + drillNumber + ' of ' + BALL_DRILLS.length));
+      stationEl.appendChild(el('div', 'st-station-spot', drill ? drill.label : station.drillId));
+      let detail = station.seconds + ' seconds';
+      if (drill && drill.split) detail = '30s ' + drill.split.right.toLowerCase() + ', then 30s ' + drill.split.left.toLowerCase();
+      else if (drill && drill.note) detail = drill.note;
+      stationEl.appendChild(el('div', 'st-station-shots', detail));
       skillTestCard.appendChild(stationEl);
 
-      const timer = el('div', 'st-timer');
-      timer.id = 'st-timer-display';
-      skillTestCard.appendChild(timer);
+      const phase = el('div', 'st-drill-phase' + (resting ? ' resting' : ''));
+      phase.id = 'st-drill-phase';
+      phase.textContent = drillPhaseLabel();
+      skillTestCard.appendChild(phase);
+
+      const clock = el('div', 'st-timer');
+      clock.id = 'st-drill-clock';
+      clock.textContent = formatClock(drillClock ? Math.ceil(drillRemainingMs() / 1000) : station.seconds);
+      skillTestCard.appendChild(clock);
 
       const timerNote = el('div', 'st-timer-note');
-      timerNote.id = 'st-timer-note';
+      timerNote.textContent = resting
+        ? 'Next: ' + (drillInfo(activeTest.stations[index + 1].drillId) || {}).label
+        : (drillClock ? 'Beeps at the halfway mark and at the end.' : 'Beeps at the start, halfway and end.');
       skillTestCard.appendChild(timerNote);
 
       const timerActions = el('div', 'st-actions');
-      const timerBtn = el('button', 'secondary');
-      timerBtn.type = 'button';
-      timerBtn.id = 'st-timer-btn';
-      timerBtn.addEventListener('click', toggleBallTimer);
-      timerActions.appendChild(timerBtn);
+      if (resting) {
+        const skip = el('button', 'secondary', 'Start next drill now');
+        skip.type = 'button';
+        skip.id = 'st-drill-skip';
+        skip.addEventListener('click', () => {
+          clearDrillClock();
+          advanceToNextDrill();
+        });
+        timerActions.appendChild(skip);
+      } else {
+        const startBtn = el('button', 'secondary', drillClock ? (drillClock.paused ? 'Resume' : 'Pause') : 'Start drill');
+        startBtn.type = 'button';
+        startBtn.id = 'st-drill-btn';
+        startBtn.addEventListener('click', () => (drillClock ? toggleDrillPause() : startDrillTimer()));
+        timerActions.appendChild(startBtn);
+        if (drillClock) {
+          const reset = el('button', 'secondary', 'Reset');
+          reset.type = 'button';
+          reset.id = 'st-drill-reset';
+          reset.addEventListener('click', () => {
+            clearDrillClock();
+            renderSkillTests();
+          });
+          timerActions.appendChild(reset);
+        }
+      }
       skillTestCard.appendChild(timerActions);
 
-      const reps = el('div', 'st-makes');
-      reps.appendChild(el('div', 'st-makes-caption', 'Reps completed'));
-      reps.appendChild(buildStepper({
-        value: station.reps,
-        min: 0,
-        max: 999,
-        ariaLabel: 'Reps completed',
-        onChange: value => {
-          station.reps = value;
-          saveTestProgress(activeTest);
-        }
-      }));
-      skillTestCard.appendChild(reps);
-      updateTimerDisplay();
+      if (drill && drill.split) {
+        const hands = el('div', 'st-hand-grid');
+        [['right', drill.split.right, 'repsRight'], ['left', drill.split.left, 'repsLeft']].forEach(entry => {
+          const side = el('div', 'st-hand-col');
+          side.appendChild(el('div', 'st-makes-caption', entry[1]));
+          side.appendChild(buildStepper({
+            value: station[entry[2]] || 0,
+            min: 0,
+            max: 999,
+            ariaLabel: entry[1] + ' reps',
+            onChange: value => {
+              station[entry[2]] = value;
+              saveTestProgress(activeTest);
+            }
+          }));
+          hands.appendChild(side);
+        });
+        skillTestCard.appendChild(hands);
+      } else {
+        const reps = el('div', 'st-makes');
+        reps.appendChild(el('div', 'st-makes-caption', 'Reps completed'));
+        reps.appendChild(buildStepper({
+          value: station.reps || 0,
+          min: 0,
+          max: 999,
+          ariaLabel: 'Reps completed',
+          onChange: value => {
+            station.reps = value;
+            saveTestProgress(activeTest);
+          }
+        }));
+        skillTestCard.appendChild(reps);
+      }
     }
 
     const actions = el('div', 'st-actions');
