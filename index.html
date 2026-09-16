@@ -76,6 +76,134 @@
     margin-top: 16px;
   }
 
+  .pir-card {
+    text-align: center;
+  }
+
+  .pir-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .pir-score {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 4px 0 2px;
+    font-variant-numeric: proportional-nums;
+  }
+
+  .pir-stats {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0 4px;
+  }
+
+  .pir-stat {
+    flex: 1;
+    max-width: 140px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 6px;
+  }
+
+  .pir-stat-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .pir-stat-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-top: 2px;
+  }
+
+  .pir-chart-wrap {
+    position: relative;
+    margin-top: 14px;
+    text-align: left;
+  }
+
+  .pir-chart-wrap svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    touch-action: pan-y;
+  }
+
+  .pir-chart-empty {
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    text-align: center;
+    padding: 20px 8px;
+  }
+
+  .chart-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    opacity: 0;
+    transition: opacity 0.1s;
+    z-index: 5;
+  }
+
+  .chart-tooltip.visible { opacity: 1; }
+
+  .chart-tooltip .tt-value { font-weight: 800; }
+
+  .rest-day-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .rest-day-btn {
+    appearance: none;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .rest-day-btn.active {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+
+  .rest-day-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .rest-day-status {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
   .add-form {
     display: flex;
     flex-direction: column;
@@ -302,6 +430,26 @@
 </header>
 
 <main>
+  <div class="card pir-card">
+    <div class="pir-label">Projected Improvement Rating</div>
+    <div class="pir-score" id="pir-score">0</div>
+    <div class="pir-stats">
+      <div class="pir-stat">
+        <div class="pir-stat-value" id="pir-multiplier">1.0x</div>
+        <div class="pir-stat-label">Multiplier</div>
+      </div>
+      <div class="pir-stat">
+        <div class="pir-stat-value" id="pir-streak">0</div>
+        <div class="pir-stat-label">Day streak</div>
+      </div>
+    </div>
+    <div class="pir-chart-wrap" id="pir-chart-wrap"></div>
+    <div class="rest-day-row">
+      <button type="button" class="rest-day-btn" id="rest-day-btn">Mark today as rest day</button>
+      <div class="rest-day-status" id="rest-day-status"></div>
+    </div>
+  </div>
+
   <div class="card">
     <form class="add-form" id="add-form">
       <div class="field">
@@ -344,6 +492,8 @@
 <script>
 (function () {
   const STORAGE_KEY = 'workout-tracker:workouts';
+  const REST_DAYS_KEY = 'workout-tracker:rest-days';
+  const MAX_REST_DAYS_PER_WEEK = 2;
 
   const CATEGORIES = [
     { id: 'lifting', label: 'Lifting', color: '#33210F' },
@@ -395,6 +545,21 @@
     } catch (e) {}
   }
 
+  function loadRestDays() {
+    try {
+      const raw = localStorage.getItem(REST_DAYS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveRestDays(restDays) {
+    try {
+      localStorage.setItem(REST_DAYS_KEY, JSON.stringify(restDays));
+    } catch (e) {}
+  }
+
   let workouts = load();
 
   const form = document.getElementById('add-form');
@@ -409,6 +574,13 @@
   const todayCount = document.getElementById('today-count');
   const historyContainer = document.getElementById('history-container');
   const historyEmpty = document.getElementById('history-empty');
+
+  const pirScoreEl = document.getElementById('pir-score');
+  const pirMultiplierEl = document.getElementById('pir-multiplier');
+  const pirStreakEl = document.getElementById('pir-streak');
+  const pirChartWrap = document.getElementById('pir-chart-wrap');
+  const restDayBtn = document.getElementById('rest-day-btn');
+  const restDayStatus = document.getElementById('rest-day-status');
 
   CATEGORIES.forEach(c => {
     const opt = document.createElement('option');
@@ -452,7 +624,332 @@
     return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
   }
 
+  function keyToEpochDay(key) {
+    return Math.floor(Date.parse(key + 'T00:00:00Z') / 86400000);
+  }
+
+  function epochDayToKey(epochDay) {
+    return new Date(epochDay * 86400000).toISOString().slice(0, 10);
+  }
+
+  // Monday-anchored week identifier (an epoch day number), used to cap
+  // rest days at 2 per week regardless of which day the week starts on.
+  function weekKeyOf(dateKey) {
+    const epochDay = keyToEpochDay(dateKey);
+    const dow = new Date(epochDay * 86400000).getUTCDay(); // 0=Sun..6=Sat
+    const diffToMonday = (dow + 6) % 7;
+    return epochDay - diffToMonday;
+  }
+
+  // Replays every day from the first logged activity through today,
+  // deriving the PIR score, multiplier, and streak purely from completed
+  // workouts and marked rest days rather than persisting a running total.
+  function computePIR() {
+    const today = todayKey(Date.now());
+    const trainingCounts = new Map();
+    workouts.forEach(w => {
+      if (w.done && w.completedAt) {
+        const key = todayKey(w.completedAt);
+        trainingCounts.set(key, (trainingCounts.get(key) || 0) + 1);
+      }
+    });
+
+    const restDays = loadRestDays();
+    const restDaySet = new Set(restDays);
+    const restDaysUsedThisWeek = restDays.filter(d => weekKeyOf(d) === weekKeyOf(today)).length;
+
+    const activeDates = [...trainingCounts.keys(), ...restDaySet];
+    if (activeDates.length === 0) {
+      return {
+        score: 0,
+        multiplier: 1.0,
+        streak: 0,
+        history: [],
+        today,
+        restDaysUsedThisWeek,
+        isTodayRest: restDaySet.has(today),
+        isTodayTraining: false
+      };
+    }
+
+    const firstDay = activeDates.reduce((a, b) => (a < b ? a : b));
+    const firstEpochDay = keyToEpochDay(firstDay);
+    const todayEpochDay = keyToEpochDay(today);
+
+    let score = 0;
+    let streakCount = 0;
+    const history = [];
+
+    for (let epochDay = firstEpochDay; epochDay <= todayEpochDay; epochDay++) {
+      const dKey = epochDayToKey(epochDay);
+      const isToday = dKey === today;
+      const workoutsToday = trainingCounts.get(dKey) || 0;
+
+      if (workoutsToday > 0) {
+        streakCount += 1;
+        const step = Math.min(streakCount - 1, 10);
+        const multiplier = (10 + step) / 10;
+        const pointsDelta = (10 + step) * workoutsToday;
+        score = Math.max(0, score + pointsDelta);
+        history.push({ date: dKey, score, event: 'workout', multiplier });
+      } else if (restDaySet.has(dKey)) {
+        const step = streakCount > 0 ? Math.min(streakCount - 1, 10) : 0;
+        const multiplier = streakCount > 0 ? (10 + step) / 10 : 1.0;
+        history.push({ date: dKey, score, event: 'rest', multiplier });
+      } else if (isToday) {
+        // Today isn't over yet — don't penalize until it's actually missed.
+        break;
+      } else {
+        streakCount = 0;
+        score = Math.max(0, score - 15);
+        history.push({ date: dKey, score, event: 'missed', multiplier: 1.0 });
+      }
+    }
+
+    const finalStep = streakCount > 0 ? Math.min(streakCount - 1, 10) : 0;
+    const multiplier = streakCount > 0 ? (10 + finalStep) / 10 : 1.0;
+
+    return {
+      score,
+      multiplier,
+      streak: streakCount,
+      history,
+      today,
+      restDaysUsedThisWeek,
+      isTodayRest: restDaySet.has(today),
+      isTodayTraining: (trainingCounts.get(today) || 0) > 0
+    };
+  }
+
+  function toggleRestDay() {
+    const today = todayKey(Date.now());
+    let restDays = loadRestDays();
+    if (restDays.includes(today)) {
+      restDays = restDays.filter(d => d !== today);
+    } else {
+      const usedThisWeek = restDays.filter(d => weekKeyOf(d) === weekKeyOf(today)).length;
+      if (usedThisWeek >= MAX_REST_DAYS_PER_WEEK) return;
+      restDays.push(today);
+    }
+    saveRestDays(restDays);
+    render();
+  }
+
+  const rootStyle = getComputedStyle(document.documentElement);
+  function cssVar(name) {
+    return rootStyle.getPropertyValue(name).trim();
+  }
+
+  function renderChart(history) {
+    pirChartWrap.innerHTML = '';
+
+    if (history.length < 2) {
+      const empty = document.createElement('div');
+      empty.className = 'pir-chart-empty';
+      empty.textContent = history.length === 0
+        ? 'Complete a workout to start tracking PIR over time.'
+        : 'Keep logging workouts to see your PIR trend.';
+      pirChartWrap.appendChild(empty);
+      return;
+    }
+
+    const width = 320;
+    const height = 130;
+    const padLeft = 34;
+    const padRight = 8;
+    const padTop = 10;
+    const padBottom = 20;
+    const plotW = width - padLeft - padRight;
+    const plotH = height - padTop - padBottom;
+
+    const scores = history.map(h => h.score);
+    const maxScore = Math.max(...scores, 10);
+    const minScore = 0;
+
+    const xAt = i => padLeft + (history.length === 1 ? 0 : (i / (history.length - 1)) * plotW);
+    const yAt = v => padTop + plotH - ((v - minScore) / (maxScore - minScore)) * plotH;
+
+    const points = history.map((h, i) => [xAt(i), yAt(h.score)]);
+    const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+    const areaPath = `${linePath} L${points[points.length - 1][0].toFixed(1)},${(padTop + plotH).toFixed(1)} L${points[0][0].toFixed(1)},${(padTop + plotH).toFixed(1)} Z`;
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', `PIR trend from ${history[0].score} to ${history[history.length - 1].score} points over ${history.length} days`);
+
+    // Gridlines + axis labels (baseline and max)
+    [minScore, maxScore].forEach(v => {
+      const y = yAt(v);
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', padLeft);
+      line.setAttribute('x2', width - padRight);
+      line.setAttribute('y1', y.toFixed(1));
+      line.setAttribute('y2', y.toFixed(1));
+      line.setAttribute('stroke', cssVar('--border'));
+      line.setAttribute('stroke-width', '1');
+      svg.appendChild(line);
+
+      const label = document.createElementNS(svgNS, 'text');
+      label.setAttribute('x', padLeft - 6);
+      label.setAttribute('y', (y + 3).toFixed(1));
+      label.setAttribute('text-anchor', 'end');
+      label.setAttribute('font-size', '9');
+      label.setAttribute('fill', cssVar('--text-dim'));
+      label.textContent = Math.round(v);
+      svg.appendChild(label);
+    });
+
+    // X-axis date labels: first and last day only, to stay legible on iPhone widths
+    [0, history.length - 1].forEach(i => {
+      if (i === 0 && history.length === 1) return;
+      const label = document.createElementNS(svgNS, 'text');
+      label.setAttribute('x', points[i][0].toFixed(1));
+      label.setAttribute('y', height - 4);
+      label.setAttribute('text-anchor', i === 0 ? 'start' : 'end');
+      label.setAttribute('font-size', '9');
+      label.setAttribute('fill', cssVar('--text-dim'));
+      const d = new Date(history[i].date + 'T00:00:00Z');
+      label.textContent = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+      svg.appendChild(label);
+    });
+
+    const area = document.createElementNS(svgNS, 'path');
+    area.setAttribute('d', areaPath);
+    area.setAttribute('fill', cssVar('--accent'));
+    area.setAttribute('fill-opacity', '0.1');
+    area.setAttribute('stroke', 'none');
+    svg.appendChild(area);
+
+    const line = document.createElementNS(svgNS, 'path');
+    line.setAttribute('d', linePath);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', cssVar('--accent'));
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(line);
+
+    const lastPoint = points[points.length - 1];
+    const endDot = document.createElementNS(svgNS, 'circle');
+    endDot.setAttribute('cx', lastPoint[0].toFixed(1));
+    endDot.setAttribute('cy', lastPoint[1].toFixed(1));
+    endDot.setAttribute('r', '5');
+    endDot.setAttribute('fill', cssVar('--accent'));
+    endDot.setAttribute('stroke', cssVar('--card'));
+    endDot.setAttribute('stroke-width', '2');
+    svg.appendChild(endDot);
+
+    // Crosshair + hover/tap dot, hidden until the reader interacts
+    const crosshair = document.createElementNS(svgNS, 'line');
+    crosshair.setAttribute('y1', padTop);
+    crosshair.setAttribute('y2', padTop + plotH);
+    crosshair.setAttribute('stroke', cssVar('--text-dim'));
+    crosshair.setAttribute('stroke-width', '1');
+    crosshair.setAttribute('opacity', '0');
+    svg.appendChild(crosshair);
+
+    const hoverDot = document.createElementNS(svgNS, 'circle');
+    hoverDot.setAttribute('r', '5');
+    hoverDot.setAttribute('fill', cssVar('--accent'));
+    hoverDot.setAttribute('stroke', cssVar('--card'));
+    hoverDot.setAttribute('stroke-width', '2');
+    hoverDot.setAttribute('opacity', '0');
+    svg.appendChild(hoverDot);
+
+    const hitArea = document.createElementNS(svgNS, 'rect');
+    hitArea.setAttribute('x', padLeft);
+    hitArea.setAttribute('y', 0);
+    hitArea.setAttribute('width', plotW);
+    hitArea.setAttribute('height', height);
+    hitArea.setAttribute('fill', 'transparent');
+    svg.appendChild(hitArea);
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'chart-tooltip';
+    pirChartWrap.appendChild(svg);
+    pirChartWrap.appendChild(tooltip);
+
+    function showAt(clientX) {
+      const rect = svg.getBoundingClientRect();
+      const relX = ((clientX - rect.left) / rect.width) * width;
+      let nearest = 0;
+      let nearestDist = Infinity;
+      points.forEach((p, i) => {
+        const dist = Math.abs(p[0] - relX);
+        if (dist < nearestDist) {
+          nearestDist = dist;
+          nearest = i;
+        }
+      });
+
+      const [px, py] = points[nearest];
+      crosshair.setAttribute('x1', px.toFixed(1));
+      crosshair.setAttribute('x2', px.toFixed(1));
+      crosshair.setAttribute('opacity', '1');
+      hoverDot.setAttribute('cx', px.toFixed(1));
+      hoverDot.setAttribute('cy', py.toFixed(1));
+      hoverDot.setAttribute('opacity', '1');
+
+      const entry = history[nearest];
+      const d = new Date(entry.date + 'T00:00:00Z');
+      const dateLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+      tooltip.innerHTML = '';
+      const valueSpan = document.createElement('span');
+      valueSpan.className = 'tt-value';
+      valueSpan.textContent = entry.score;
+      tooltip.appendChild(valueSpan);
+      tooltip.appendChild(document.createTextNode(' PIR — '));
+      tooltip.appendChild(document.createTextNode(dateLabel));
+
+      const pctX = (px / width) * 100;
+      const pctY = (py / height) * 100;
+      tooltip.style.left = pctX + '%';
+      tooltip.style.top = pctY + '%';
+      tooltip.classList.add('visible');
+    }
+
+    function hide() {
+      crosshair.setAttribute('opacity', '0');
+      hoverDot.setAttribute('opacity', '0');
+      tooltip.classList.remove('visible');
+    }
+
+    hitArea.addEventListener('pointermove', e => showAt(e.clientX));
+    hitArea.addEventListener('pointerdown', e => showAt(e.clientX));
+    hitArea.addEventListener('pointerleave', hide);
+  }
+
+  function renderPIR() {
+    const pir = computePIR();
+
+    pirScoreEl.textContent = pir.score;
+    pirMultiplierEl.textContent = pir.multiplier.toFixed(1) + 'x';
+    pirStreakEl.textContent = pir.streak;
+
+    renderChart(pir.history);
+
+    const capReached = pir.restDaysUsedThisWeek >= MAX_REST_DAYS_PER_WEEK;
+    restDayBtn.classList.toggle('active', pir.isTodayRest);
+    if (pir.isTodayTraining) {
+      restDayBtn.textContent = 'Workout already logged today';
+      restDayBtn.disabled = true;
+    } else if (pir.isTodayRest) {
+      restDayBtn.textContent = 'Unmark today as rest day';
+      restDayBtn.disabled = false;
+    } else if (capReached) {
+      restDayBtn.textContent = 'Rest day cap reached';
+      restDayBtn.disabled = true;
+    } else {
+      restDayBtn.textContent = 'Mark today as rest day';
+      restDayBtn.disabled = false;
+    }
+    restDayStatus.textContent = `${pir.restDaysUsedThisWeek}/${MAX_REST_DAYS_PER_WEEK} rest days used this week`;
+  }
+
   function render() {
+    renderPIR();
     renderChips();
 
     const inFilter = w => activeCategory === 'all' || (w.category || DEFAULT_CATEGORY) === activeCategory;
@@ -546,6 +1043,8 @@
     save(workouts);
     render();
   }
+
+  restDayBtn.addEventListener('click', toggleRestDay);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
