@@ -448,6 +448,20 @@
     margin-top: 2px;
   }
 
+  .comp-block {
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px;
+    background: var(--bg);
+  }
+
+  .comp-block .st-block-label {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .comp-block .st-note { margin-top: 2px; }
+
   .game-entry {
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -1913,12 +1927,22 @@
   const SEASONS_KEY = 'workout-tracker:seasons';
   const ACTIVE_SEASON_KEY = 'workout-tracker:active-season';
 
+  // Ordered most casual to most competitive.
   const GAME_TYPES = [
+    { id: 'pickup', label: 'Pickup', short: 'Pickup' },
+    { id: 'scrimmage', label: 'Scrimmage', short: 'Scrimmage' },
     { id: 'league', label: 'League game', short: 'League' },
     { id: 'tournament', label: 'Tournament', short: 'Tourney' },
-    { id: 'pickup', label: 'Pickup', short: 'Pickup' },
-    { id: 'scrimmage', label: 'Scrimmage', short: 'Scrimmage' }
+    { id: 'proam', label: 'Pro-Am', short: 'Pro-Am' },
+    { id: 'semipro', label: 'Semi-Pro', short: 'Semi-Pro' },
+    { id: 'pro', label: 'Pro', short: 'Pro' }
   ];
+
+  const COMPETITIVE_TYPES = ['proam', 'semipro', 'pro'];
+
+  function isCompetitiveType(typeId) {
+    return COMPETITIVE_TYPES.indexOf(typeId) !== -1;
+  }
 
   const STAT_FIELDS = [
     { id: 'min', label: 'Minutes', short: 'MIN' },
@@ -2060,11 +2084,32 @@
     return games.filter(g => g.played && g.stats);
   }
 
-  function filteredGames() {
+  function gamesInSelectedSeason() {
     return loadGames()
       .filter(g => gameSeasonFilter === 'all' || g.seasonId === gameSeasonFilter)
-      .filter(g => gameTypeFilter === 'all' || g.type === gameTypeFilter)
       .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  }
+
+  function matchesTypeFilter(game) {
+    if (gameTypeFilter === 'all') return true;
+    if (gameTypeFilter === 'competitive') return isCompetitiveType(game.type);
+    return game.type === gameTypeFilter;
+  }
+
+  function filteredGames() {
+    return gamesInSelectedSeason().filter(matchesTypeFilter);
+  }
+
+  // Competitive games in the selected season, independent of the type
+  // filter, so the comparison line stays available while viewing pickup.
+  function competitiveGames() {
+    return gamesInSelectedSeason().filter(g => isCompetitiveType(g.type));
+  }
+
+  // Only the combined Competitive filter restates the line exactly; a single
+  // tier like Pro is still worth comparing against the competitive baseline.
+  function typeFilterIsCompetitiveOnly() {
+    return gameTypeFilter === 'competitive';
   }
 
   // Season percentages come from summed totals, never from averaging the
@@ -3720,6 +3765,10 @@
     allTypeOpt.value = 'all';
     allTypeOpt.textContent = 'All game types';
     typeSelect.appendChild(allTypeOpt);
+    const competitiveOpt = document.createElement('option');
+    competitiveOpt.value = 'competitive';
+    competitiveOpt.textContent = 'Competitive (Pro-Am, Semi-Pro, Pro)';
+    typeSelect.appendChild(competitiveOpt);
     GAME_TYPES.forEach(type => {
       const opt = document.createElement('option');
       opt.value = type.id;
@@ -3784,6 +3833,7 @@
         + summary.totals.tpm + '/' + summary.totals.tpa + ' 3PT, ' + summary.totals.ftm + '/' + summary.totals.fta
         + ' FT), not from averaging each game’s percentage.'));
       gamesCard.appendChild(avgBlock);
+      gamesCard.appendChild(renderCompetitiveLine());
 
       const highBlock = el('div', 'st-block');
       highBlock.appendChild(el('div', 'st-block-label', 'Season highs'));
@@ -3839,6 +3889,45 @@
     }
     games.slice().reverse().forEach(game => logBlock.appendChild(renderGameLogEntry(game, highs)));
     gamesCard.appendChild(logBlock);
+  }
+
+  // A fixed Pro-Am/Semi-Pro/Pro line shown alongside whatever filter is
+  // selected, so casual numbers can be read against real competition.
+  // Suppressed when the filter is already competitive-only — it would
+  // just restate the block above it.
+  function renderCompetitiveLine() {
+    const frag = document.createDocumentFragment();
+    if (typeFilterIsCompetitiveOnly()) return frag;
+
+    const compSummary = aggregateGames(competitiveGames());
+    if (!compSummary) return frag;
+
+    const block = el('div', 'st-block comp-block');
+    block.appendChild(el('div', 'st-block-label',
+      'Competitive only · ' + compSummary.games + (compSummary.games === 1 ? ' game' : ' games')
+      + ' · ' + compSummary.wins + 'W–' + compSummary.losses + 'L'));
+
+    const grid = el('div', 'stat-grid');
+    [
+      ['PPG', formatStatAvg(compSummary.per.pts)],
+      ['RPG', formatStatAvg(compSummary.per.reb)],
+      ['APG', formatStatAvg(compSummary.per.ast)],
+      ['MPG', formatStatAvg(compSummary.per.min)],
+      ['FG%', formatPctStat(compSummary.pcts.fg)],
+      ['3PT%', formatPctStat(compSummary.pcts.tp)],
+      ['FT%', formatPctStat(compSummary.pcts.ft)],
+      ['TS%', formatPctStat(compSummary.pcts.ts)]
+    ].forEach(pair => {
+      const tile = el('div', 'stat-tile');
+      tile.appendChild(el('div', 'stat-tile-value', pair[1]));
+      tile.appendChild(el('div', 'stat-tile-label', pair[0]));
+      grid.appendChild(tile);
+    });
+    block.appendChild(grid);
+    block.appendChild(el('div', 'st-note',
+      'Pro-Am, Semi-Pro and Pro games in this season, shown whatever the filter above is set to.'));
+    frag.appendChild(block);
+    return frag;
   }
 
   function shortDate(dateKey) {
