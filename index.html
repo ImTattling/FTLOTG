@@ -327,6 +327,271 @@
     line-height: 1.45;
   }
 
+  .cal-game {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    transform: rotate(45deg);
+    display: block;
+    flex: 0 0 auto;
+  }
+
+  .cal-game.scheduled {
+    background: transparent;
+    border: 1.5px solid var(--accent);
+  }
+
+  .cal-games { margin-top: 12px; }
+
+  .cal-game-row {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 9px 10px;
+    background: var(--bg);
+    margin-bottom: 8px;
+  }
+
+  .cal-game-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .cal-game-opponent { font-weight: 700; font-size: 0.88rem; }
+
+  .cal-game-result {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    flex: 0 0 auto;
+  }
+
+  .cal-game-result.win { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .cal-game-result.loss { color: var(--danger); border-color: var(--danger); }
+  .cal-game-result.scheduled { color: var(--text-dim); }
+
+  .cal-game-meta, .cal-game-line {
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  .cal-game-line { color: var(--text); font-weight: 600; }
+
+  .cal-game-season {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .cal-game-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+  .cal-mini-btn {
+    appearance: none;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.74rem;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .cal-mini-btn.danger { border-color: var(--danger); color: var(--danger); }
+  .cal-mini-btn.wide { width: 100%; padding: 9px; font-size: 0.8rem; }
+
+  .game-controls { display: flex; gap: 8px; }
+  .game-controls select { flex: 1; min-width: 0; }
+
+  .game-season-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .game-season-active { font-size: 0.74rem; color: var(--text-dim); }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .stat-tile {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 3px;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .stat-tile-value { font-size: 0.95rem; font-weight: 700; }
+
+  .stat-tile-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .game-entry {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  .game-entry-head {
+    appearance: none;
+    width: 100%;
+    background: none;
+    border: none;
+    font-family: inherit;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .game-entry-left { min-width: 0; flex: 1; }
+  .game-entry-title { font-weight: 700; font-size: 0.88rem; word-break: break-word; }
+  .game-entry-meta { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }
+
+  .game-entry-right {
+    flex: 0 0 auto;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .game-entry-pts { font-weight: 800; font-size: 0.95rem; }
+  .game-entry-line { font-size: 0.72rem; color: var(--text-dim); }
+
+  .game-high-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0 10px 8px;
+  }
+
+  .game-high-tag {
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--done-bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+
+  .box-score {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    padding: 0 10px 8px;
+  }
+
+  .box-cell {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 2px;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .box-cell-value { font-size: 0.85rem; font-weight: 700; }
+
+  .box-cell-label {
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-dim);
+    margin-top: 1px;
+  }
+
+  .game-entry .stat-grid, .game-entry .cal-game-actions { padding: 0 10px 10px; margin-bottom: 0; }
+
+  .stat-form {
+    border-top: 1px solid var(--border);
+    padding: 12px 10px;
+    background: var(--card);
+  }
+
+  .stat-input-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+
+  .stat-input { min-width: 0; }
+
+  .stat-input label {
+    font-size: 0.58rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+  }
+
+  .stat-input input { padding: 8px 4px; text-align: center; font-weight: 700; background: var(--bg); }
+
+  .stat-input-caption {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+  }
+
+  .result-row { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+
+  .result-btn {
+    appearance: none;
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .result-btn.active { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+
+  .stat-error {
+    color: var(--danger);
+    font-size: 0.76rem;
+    font-weight: 600;
+    min-height: 1em;
+    margin-bottom: 6px;
+  }
+
   .pir-card {
     text-align: center;
   }
@@ -1142,6 +1407,11 @@
   </section>
 
   <section class="list-section">
+    <h2>Games</h2>
+    <div class="card" id="games-card"></div>
+  </section>
+
+  <section class="list-section">
     <h2>Skill Tests</h2>
     <div class="card" id="skill-test-card"></div>
   </section>
@@ -1241,6 +1511,7 @@
   const restDayStatus = document.getElementById('rest-day-status');
   const skillTestCard = document.getElementById('skill-test-card');
   const calendarCard = document.getElementById('calendar-card');
+  const gamesCard = document.getElementById('games-card');
 
   CATEGORIES.forEach(c => {
     const opt = document.createElement('option');
@@ -1311,6 +1582,16 @@
       if (w.done && w.completedAt) {
         const key = todayKey(w.completedAt);
         trainingCounts.set(key, (trainingCounts.get(key) || 0) + 1);
+      }
+    });
+
+    // A played game counts as a training day exactly like a workout. Games
+    // that are only scheduled (no box score yet) never count, so marking
+    // future days can't be used to shield a streak.
+    const todayEpoch = keyToEpochDay(today);
+    loadGames().forEach(game => {
+      if (game.played && game.stats && keyToEpochDay(game.date) <= todayEpoch) {
+        trainingCounts.set(game.date, (trainingCounts.get(game.date) || 0) + 1);
       }
     });
 
@@ -1626,6 +1907,229 @@
     restDayStatus.textContent = `${pir.restDaysUsedThisWeek}/${MAX_REST_DAYS_PER_WEEK} rest days used this week`;
   }
 
+  // ---------- Games ----------
+
+  const GAMES_KEY = 'workout-tracker:games';
+  const SEASONS_KEY = 'workout-tracker:seasons';
+  const ACTIVE_SEASON_KEY = 'workout-tracker:active-season';
+
+  const GAME_TYPES = [
+    { id: 'league', label: 'League game', short: 'League' },
+    { id: 'tournament', label: 'Tournament', short: 'Tourney' },
+    { id: 'pickup', label: 'Pickup', short: 'Pickup' },
+    { id: 'scrimmage', label: 'Scrimmage', short: 'Scrimmage' }
+  ];
+
+  const STAT_FIELDS = [
+    { id: 'min', label: 'Minutes', short: 'MIN' },
+    { id: 'pts', label: 'Points', short: 'PTS' },
+    { id: 'fgm', label: 'FG made', short: 'FGM' },
+    { id: 'fga', label: 'FG att', short: 'FGA' },
+    { id: 'tpm', label: '3PT made', short: '3PM' },
+    { id: 'tpa', label: '3PT att', short: '3PA' },
+    { id: 'ftm', label: 'FT made', short: 'FTM' },
+    { id: 'fta', label: 'FT att', short: 'FTA' },
+    { id: 'oreb', label: 'Off reb', short: 'OREB' },
+    { id: 'dreb', label: 'Def reb', short: 'DREB' },
+    { id: 'ast', label: 'Assists', short: 'AST' },
+    { id: 'stl', label: 'Steals', short: 'STL' },
+    { id: 'blk', label: 'Blocks', short: 'BLK' },
+    { id: 'tov', label: 'Turnovers', short: 'TOV' },
+    { id: 'pf', label: 'Fouls', short: 'PF' }
+  ];
+
+  // Pairs that must satisfy made <= attempted before a box score saves.
+  const MADE_ATTEMPT_PAIRS = [['fgm', 'fga', 'field goals'], ['tpm', 'tpa', 'three-pointers'], ['ftm', 'fta', 'free throws']];
+
+  const HIGH_STATS = [
+    { id: 'pts', label: 'Points' },
+    { id: 'reb', label: 'Rebounds' },
+    { id: 'ast', label: 'Assists' },
+    { id: 'stl', label: 'Steals' },
+    { id: 'blk', label: 'Blocks' }
+  ];
+
+  let gameSeasonFilter = 'all';
+  let gameTypeFilter = 'all';
+  let editingGameId = null;
+  let markingGameDay = null;
+  const expandedGames = new Set();
+
+  function loadGames() {
+    try {
+      const raw = localStorage.getItem(GAMES_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveGames(games) {
+    try {
+      localStorage.setItem(GAMES_KEY, JSON.stringify(games));
+    } catch (e) {}
+  }
+
+  function loadSeasons() {
+    try {
+      const raw = localStorage.getItem(SEASONS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveSeasons(seasons) {
+    try {
+      localStorage.setItem(SEASONS_KEY, JSON.stringify(seasons));
+    } catch (e) {}
+  }
+
+  function saveActiveSeasonId(id) {
+    try {
+      localStorage.setItem(ACTIVE_SEASON_KEY, id);
+    } catch (e) {}
+  }
+
+  function loadActiveSeasonId() {
+    try {
+      return localStorage.getItem(ACTIVE_SEASON_KEY);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function ensureActiveSeason() {
+    let seasons = loadSeasons();
+    if (!seasons.length) {
+      const season = {
+        id: uid(),
+        name: new Date(Date.now()).getUTCFullYear() + ' Season',
+        startedAt: Date.now()
+      };
+      seasons = [season];
+      saveSeasons(seasons);
+      saveActiveSeasonId(season.id);
+      return season;
+    }
+    const activeId = loadActiveSeasonId();
+    return seasons.find(s => s.id === activeId) || seasons[seasons.length - 1];
+  }
+
+  function seasonName(id) {
+    const season = loadSeasons().find(s => s.id === id);
+    return season ? season.name : 'Unassigned';
+  }
+
+  function gameTypeLabel(id, short) {
+    const type = GAME_TYPES.find(t => t.id === id);
+    if (!type) return id;
+    return short ? type.short : type.label;
+  }
+
+  function pctOf(made, attempted) {
+    return attempted > 0 ? (made / attempted) * 100 : null;
+  }
+
+  // TS% = points / (2 * (FGA + 0.44 * FTA))
+  function trueShootingPct(points, fga, fta) {
+    const denominator = 2 * (fga + 0.44 * fta);
+    return denominator > 0 ? (points / denominator) * 100 : null;
+  }
+
+  function gameRebounds(stats) {
+    return (stats.oreb || 0) + (stats.dreb || 0);
+  }
+
+  function gamePercentages(stats) {
+    return {
+      fg: pctOf(stats.fgm || 0, stats.fga || 0),
+      tp: pctOf(stats.tpm || 0, stats.tpa || 0),
+      ft: pctOf(stats.ftm || 0, stats.fta || 0),
+      ts: trueShootingPct(stats.pts || 0, stats.fga || 0, stats.fta || 0)
+    };
+  }
+
+  function gamesOnDay(dateKey) {
+    return loadGames().filter(g => g.date === dateKey);
+  }
+
+  function playedGamesOf(games) {
+    return games.filter(g => g.played && g.stats);
+  }
+
+  function filteredGames() {
+    return loadGames()
+      .filter(g => gameSeasonFilter === 'all' || g.seasonId === gameSeasonFilter)
+      .filter(g => gameTypeFilter === 'all' || g.type === gameTypeFilter)
+      .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+  }
+
+  // Season percentages come from summed totals, never from averaging the
+  // per-game percentages, which would weight a 1-for-2 night like a 9-for-18.
+  function aggregateGames(games) {
+    const played = playedGamesOf(games);
+    if (!played.length) return null;
+
+    const totals = {};
+    STAT_FIELDS.forEach(field => { totals[field.id] = 0; });
+    let wins = 0;
+    let losses = 0;
+
+    played.forEach(game => {
+      STAT_FIELDS.forEach(field => { totals[field.id] += game.stats[field.id] || 0; });
+      if (game.result === 'win') wins += 1;
+      else if (game.result === 'loss') losses += 1;
+    });
+
+    const count = played.length;
+    return {
+      games: count,
+      wins,
+      losses,
+      totals,
+      per: {
+        pts: totals.pts / count,
+        reb: (totals.oreb + totals.dreb) / count,
+        ast: totals.ast / count,
+        stl: totals.stl / count,
+        blk: totals.blk / count,
+        tov: totals.tov / count,
+        min: totals.min / count
+      },
+      pcts: {
+        fg: pctOf(totals.fgm, totals.fga),
+        tp: pctOf(totals.tpm, totals.tpa),
+        ft: pctOf(totals.ftm, totals.fta),
+        ts: trueShootingPct(totals.pts, totals.fga, totals.fta)
+      }
+    };
+  }
+
+  function seasonHighs(games) {
+    const played = playedGamesOf(games);
+    const highs = {};
+    HIGH_STATS.forEach(stat => {
+      let best = null;
+      played.forEach(game => {
+        const value = stat.id === 'reb' ? gameRebounds(game.stats) : (game.stats[stat.id] || 0);
+        if (!best || value > best.value) best = { value, game };
+      });
+      if (best && best.value > 0) highs[stat.id] = best;
+    });
+    return highs;
+  }
+
+  function formatStatAvg(value) {
+    return value === null || value === undefined ? '—' : value.toFixed(1);
+  }
+
+  function formatPctStat(value) {
+    return value === null || value === undefined ? '—' : value.toFixed(1) + '%';
+  }
+
   // ---------- Calendar ----------
 
   const DOW_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -1766,27 +2270,33 @@
       day.appendChild(el('span', 'cal-num', String(parseInt(cell.key.slice(8), 10))));
 
       const marks = el('span', 'cal-marks');
+      const dayGames = gamesOnDay(cell.key);
       const cats = dayCategories(cell.key);
+      if (dayGames.length) {
+        const anyPlayed = dayGames.some(g => g.played && g.stats);
+        marks.appendChild(el('span', 'cal-game' + (anyPlayed ? '' : ' scheduled')));
+      }
       if (cats.length) {
         cats.forEach(cat => {
           const dot = el('span', 'cal-dot');
           dot.style.background = cat.color;
           marks.appendChild(dot);
         });
-      } else if (entry && entry.event === 'rest') {
+      } else if (!dayGames.length && entry && entry.event === 'rest') {
         marks.appendChild(el('span', 'cal-rest'));
-      } else if (entry && entry.event === 'missed') {
+      } else if (!dayGames.length && entry && entry.event === 'missed') {
         marks.appendChild(el('span', 'cal-missed', '✕'));
       }
       day.appendChild(marks);
 
       const label = [formatDayTitle(cell.key)];
+      if (dayGames.length) label.push(dayGames.some(g => g.played) ? 'game played' : 'game scheduled');
       if (cats.length) label.push(cats.length + ' workout categories');
       else if (entry && entry.event === 'rest') label.push('rest day');
       else if (entry && entry.event === 'missed') label.push('missed');
       if (isToday) label.push('today');
       day.setAttribute('aria-label', label.join(', '));
-      if (isFuture) day.disabled = true;
+      if (isFuture) day.classList.add('future');
 
       day.addEventListener('click', () => {
         selectedDay = selectedDay === cell.key ? null : cell.key;
@@ -1893,6 +2403,8 @@
       wrap.appendChild(list);
     }
 
+    wrap.appendChild(renderDayGames(dateKey));
+
     if (canLogFor(dateKey, pir.today)) {
       wrap.appendChild(renderDayLogForm(dateKey, isToday));
     } else if (keyToEpochDay(dateKey) < keyToEpochDay(pir.today)) {
@@ -1901,6 +2413,141 @@
     }
 
     return wrap;
+  }
+
+  function renderDayGames(dateKey) {
+    const wrap = el('div', 'cal-games');
+    const dayGames = gamesOnDay(dateKey);
+
+    dayGames.forEach(game => {
+      const row = el('div', 'cal-game-row');
+      const top = el('div', 'cal-game-top');
+      const name = el('div', 'cal-game-opponent', (game.opponent ? 'vs ' + game.opponent : 'Game'));
+      top.appendChild(name);
+      if (game.played && game.result) {
+        top.appendChild(el('span', 'cal-game-result ' + game.result, game.result === 'win' ? 'W' : 'L'));
+      } else if (!game.played) {
+        top.appendChild(el('span', 'cal-game-result scheduled', 'Scheduled'));
+      }
+      row.appendChild(top);
+
+      const meta = el('div', 'cal-game-meta');
+      meta.textContent = gameTypeLabel(game.type) + ' · ' + seasonName(game.seasonId);
+      row.appendChild(meta);
+
+      if (game.played && game.stats) {
+        const line = el('div', 'cal-game-line');
+        line.textContent = game.stats.pts + ' PTS · ' + gameRebounds(game.stats) + ' REB · '
+          + game.stats.ast + ' AST · TS ' + formatPctStat(gamePercentages(game.stats).ts);
+        row.appendChild(line);
+      }
+
+      const actions = el('div', 'cal-game-actions');
+      const statBtn = el('button', 'cal-mini-btn', game.played ? 'Edit box score' : 'Add box score');
+      statBtn.type = 'button';
+      statBtn.addEventListener('click', () => {
+        editingGameId = game.id;
+        render();
+        const card = document.getElementById('games-card');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      actions.appendChild(statBtn);
+
+      const removeBtn = el('button', 'cal-mini-btn danger', 'Remove');
+      removeBtn.type = 'button';
+      removeBtn.addEventListener('click', () => {
+        if (!window.confirm('Remove this game' + (game.played ? ' and its box score' : '') + '?')) return;
+        saveGames(loadGames().filter(g => g.id !== game.id));
+        if (editingGameId === game.id) editingGameId = null;
+        render();
+      });
+      actions.appendChild(removeBtn);
+      row.appendChild(actions);
+      wrap.appendChild(row);
+    });
+
+    if (markingGameDay === dateKey) {
+      wrap.appendChild(renderMarkGameForm(dateKey));
+    } else {
+      const markBtn = el('button', 'cal-mini-btn wide', dayGames.length ? 'Mark another game' : 'Mark as game day');
+      markBtn.type = 'button';
+      markBtn.id = 'cal-mark-game';
+      markBtn.addEventListener('click', () => {
+        markingGameDay = dateKey;
+        render();
+      });
+      wrap.appendChild(markBtn);
+    }
+
+    return wrap;
+  }
+
+  function renderMarkGameForm(dateKey) {
+    const season = ensureActiveSeason();
+    const form = el('form', 'cal-log');
+    form.id = 'cal-game-form';
+    form.appendChild(el('div', 'cal-log-label', 'Mark ' + formatDayTitle(dateKey) + ' as a game day'));
+
+    const opponent = document.createElement('input');
+    opponent.type = 'text';
+    opponent.id = 'game-opponent';
+    opponent.placeholder = 'Opponent';
+    opponent.autocomplete = 'off';
+    opponent.required = true;
+    const opponentRow = el('div', 'cal-log-row');
+    opponentRow.appendChild(opponent);
+    form.appendChild(opponentRow);
+
+    const typeSelect = document.createElement('select');
+    typeSelect.id = 'game-type';
+    GAME_TYPES.forEach(type => {
+      const opt = document.createElement('option');
+      opt.value = type.id;
+      opt.textContent = type.label;
+      typeSelect.appendChild(opt);
+    });
+    const typeRow = el('div', 'cal-log-row');
+    typeRow.appendChild(typeSelect);
+    form.appendChild(typeRow);
+
+    form.appendChild(el('div', 'cal-game-season', 'Season: ' + season.name));
+
+    const actions = el('div', 'cal-log-row');
+    const cancel = el('button', 'secondary', 'Cancel');
+    cancel.type = 'button';
+    cancel.addEventListener('click', () => {
+      markingGameDay = null;
+      render();
+    });
+    const submit = el('button', 'primary', 'Save game');
+    submit.type = 'submit';
+    submit.id = 'game-save';
+    actions.appendChild(cancel);
+    actions.appendChild(submit);
+    form.appendChild(actions);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = opponent.value.trim();
+      if (!name) return;
+      const games = loadGames();
+      games.push({
+        id: uid(),
+        seasonId: season.id,
+        date: dateKey,
+        opponent: name,
+        type: typeSelect.value,
+        played: false,
+        result: null,
+        stats: null,
+        createdAt: Date.now()
+      });
+      saveGames(games);
+      markingGameDay = null;
+      render();
+    });
+
+    return form;
   }
 
   function renderDayLogForm(dateKey, isToday) {
@@ -2878,10 +3525,562 @@
     else renderSkillTestIdle();
   }
 
+  // Generic single-series line chart: 2px line, 10% area wash, end dot,
+  // and a crosshair that snaps to the nearest point. No legend — the
+  // block heading names the series.
+  function buildLineChart(opts) {
+    const wrap = el('div', 'pir-chart-wrap');
+    const series = opts.points;
+
+    if (series.length < 2) {
+      wrap.appendChild(el('div', 'pir-chart-empty', opts.emptyText || 'Two games needed to plot a trend.'));
+      return wrap;
+    }
+
+    const width = 320;
+    const height = 120;
+    const padLeft = 34;
+    const padRight = 8;
+    const padTop = 10;
+    const padBottom = 20;
+    const plotW = width - padLeft - padRight;
+    const plotH = height - padTop - padBottom;
+
+    const values = series.map(p => p.value);
+    const maxValue = Math.max(...values, opts.minTop || 1);
+    const xAt = i => padLeft + (i / (series.length - 1)) * plotW;
+    const yAt = v => padTop + plotH - (v / maxValue) * plotH;
+
+    const points = series.map((p, i) => [xAt(i), yAt(p.value)]);
+    const linePath = points.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const areaPath = linePath + ' L' + points[points.length - 1][0].toFixed(1) + ',' + (padTop + plotH).toFixed(1)
+      + ' L' + points[0][0].toFixed(1) + ',' + (padTop + plotH).toFixed(1) + ' Z';
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', opts.ariaLabel || 'Trend chart');
+
+    [0, maxValue].forEach(v => {
+      const y = yAt(v);
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', padLeft);
+      line.setAttribute('x2', width - padRight);
+      line.setAttribute('y1', y.toFixed(1));
+      line.setAttribute('y2', y.toFixed(1));
+      line.setAttribute('stroke', cssVar('--border'));
+      line.setAttribute('stroke-width', '1');
+      svg.appendChild(line);
+
+      const label = document.createElementNS(svgNS, 'text');
+      label.setAttribute('x', padLeft - 6);
+      label.setAttribute('y', (y + 3).toFixed(1));
+      label.setAttribute('text-anchor', 'end');
+      label.setAttribute('font-size', '9');
+      label.setAttribute('fill', cssVar('--text-dim'));
+      label.textContent = opts.formatAxis ? opts.formatAxis(v) : Math.round(v);
+      svg.appendChild(label);
+    });
+
+    [0, series.length - 1].forEach(i => {
+      const label = document.createElementNS(svgNS, 'text');
+      label.setAttribute('x', points[i][0].toFixed(1));
+      label.setAttribute('y', height - 4);
+      label.setAttribute('text-anchor', i === 0 ? 'start' : 'end');
+      label.setAttribute('font-size', '9');
+      label.setAttribute('fill', cssVar('--text-dim'));
+      label.textContent = series[i].axisLabel;
+      svg.appendChild(label);
+    });
+
+    const area = document.createElementNS(svgNS, 'path');
+    area.setAttribute('d', areaPath);
+    area.setAttribute('fill', cssVar('--accent'));
+    area.setAttribute('fill-opacity', '0.1');
+    svg.appendChild(area);
+
+    const line = document.createElementNS(svgNS, 'path');
+    line.setAttribute('d', linePath);
+    line.setAttribute('fill', 'none');
+    line.setAttribute('stroke', cssVar('--accent'));
+    line.setAttribute('stroke-width', '2');
+    line.setAttribute('stroke-linecap', 'round');
+    line.setAttribute('stroke-linejoin', 'round');
+    svg.appendChild(line);
+
+    const last = points[points.length - 1];
+    const endDot = document.createElementNS(svgNS, 'circle');
+    endDot.setAttribute('cx', last[0].toFixed(1));
+    endDot.setAttribute('cy', last[1].toFixed(1));
+    endDot.setAttribute('r', '5');
+    endDot.setAttribute('fill', cssVar('--accent'));
+    endDot.setAttribute('stroke', cssVar('--card'));
+    endDot.setAttribute('stroke-width', '2');
+    svg.appendChild(endDot);
+
+    const crosshair = document.createElementNS(svgNS, 'line');
+    crosshair.setAttribute('y1', padTop);
+    crosshair.setAttribute('y2', padTop + plotH);
+    crosshair.setAttribute('stroke', cssVar('--text-dim'));
+    crosshair.setAttribute('stroke-width', '1');
+    crosshair.setAttribute('opacity', '0');
+    svg.appendChild(crosshair);
+
+    const hoverDot = document.createElementNS(svgNS, 'circle');
+    hoverDot.setAttribute('r', '5');
+    hoverDot.setAttribute('fill', cssVar('--accent'));
+    hoverDot.setAttribute('stroke', cssVar('--card'));
+    hoverDot.setAttribute('stroke-width', '2');
+    hoverDot.setAttribute('opacity', '0');
+    svg.appendChild(hoverDot);
+
+    const hit = document.createElementNS(svgNS, 'rect');
+    hit.setAttribute('x', padLeft);
+    hit.setAttribute('y', 0);
+    hit.setAttribute('width', plotW);
+    hit.setAttribute('height', height);
+    hit.setAttribute('fill', 'transparent');
+    svg.appendChild(hit);
+
+    const tooltip = el('div', 'chart-tooltip');
+    wrap.appendChild(svg);
+    wrap.appendChild(tooltip);
+
+    function showAt(clientX) {
+      const rect = svg.getBoundingClientRect();
+      const relX = ((clientX - rect.left) / rect.width) * width;
+      let nearest = 0;
+      let bestDist = Infinity;
+      points.forEach((p, i) => {
+        const dist = Math.abs(p[0] - relX);
+        if (dist < bestDist) { bestDist = dist; nearest = i; }
+      });
+      const [px, py] = points[nearest];
+      crosshair.setAttribute('x1', px.toFixed(1));
+      crosshair.setAttribute('x2', px.toFixed(1));
+      crosshair.setAttribute('opacity', '1');
+      hoverDot.setAttribute('cx', px.toFixed(1));
+      hoverDot.setAttribute('cy', py.toFixed(1));
+      hoverDot.setAttribute('opacity', '1');
+
+      tooltip.innerHTML = '';
+      const valueSpan = el('span', 'tt-value', opts.formatValue(series[nearest].value));
+      tooltip.appendChild(valueSpan);
+      tooltip.appendChild(document.createTextNode(' · ' + series[nearest].label));
+      tooltip.style.left = ((px / width) * 100) + '%';
+      tooltip.style.top = ((py / height) * 100) + '%';
+      tooltip.classList.add('visible');
+    }
+
+    hit.addEventListener('pointermove', e => showAt(e.clientX));
+    hit.addEventListener('pointerdown', e => showAt(e.clientX));
+    hit.addEventListener('pointerleave', () => {
+      crosshair.setAttribute('opacity', '0');
+      hoverDot.setAttribute('opacity', '0');
+      tooltip.classList.remove('visible');
+    });
+
+    return wrap;
+  }
+
+  function renderGames() {
+    gamesCard.innerHTML = '';
+    const seasons = loadSeasons();
+    const allGames = loadGames();
+    const games = filteredGames();
+    const played = playedGamesOf(games);
+    const summary = aggregateGames(games);
+    const highs = seasonHighs(games);
+
+    const controls = el('div', 'game-controls');
+
+    const seasonSelect = document.createElement('select');
+    seasonSelect.id = 'game-season-filter';
+    const allSeasonOpt = document.createElement('option');
+    allSeasonOpt.value = 'all';
+    allSeasonOpt.textContent = 'All seasons';
+    seasonSelect.appendChild(allSeasonOpt);
+    seasons.forEach(season => {
+      const opt = document.createElement('option');
+      opt.value = season.id;
+      opt.textContent = season.name;
+      seasonSelect.appendChild(opt);
+    });
+    seasonSelect.value = gameSeasonFilter;
+    seasonSelect.addEventListener('change', () => {
+      gameSeasonFilter = seasonSelect.value;
+      render();
+    });
+    controls.appendChild(seasonSelect);
+
+    const typeSelect = document.createElement('select');
+    typeSelect.id = 'game-type-filter';
+    const allTypeOpt = document.createElement('option');
+    allTypeOpt.value = 'all';
+    allTypeOpt.textContent = 'All game types';
+    typeSelect.appendChild(allTypeOpt);
+    GAME_TYPES.forEach(type => {
+      const opt = document.createElement('option');
+      opt.value = type.id;
+      opt.textContent = type.label;
+      typeSelect.appendChild(opt);
+    });
+    typeSelect.value = gameTypeFilter;
+    typeSelect.addEventListener('change', () => {
+      gameTypeFilter = typeSelect.value;
+      render();
+    });
+    controls.appendChild(typeSelect);
+    gamesCard.appendChild(controls);
+
+    const seasonRow = el('div', 'game-season-row');
+    seasonRow.appendChild(el('span', 'game-season-active', 'New games go to: ' + ensureActiveSeason().name));
+    const newSeasonBtn = el('button', 'cal-mini-btn', 'Start new season');
+    newSeasonBtn.type = 'button';
+    newSeasonBtn.id = 'new-season-btn';
+    newSeasonBtn.addEventListener('click', startNewSeason);
+    seasonRow.appendChild(newSeasonBtn);
+    gamesCard.appendChild(seasonRow);
+
+    if (!allGames.length) {
+      gamesCard.appendChild(el('div', 'empty-state',
+        'Mark a day on the calendar as a game day to start tracking games.'));
+      return;
+    }
+
+    if (summary) {
+      const avgBlock = el('div', 'st-block');
+      avgBlock.appendChild(el('div', 'st-block-label',
+        'Season averages · ' + summary.games + (summary.games === 1 ? ' game' : ' games')
+        + ' · ' + summary.wins + 'W–' + summary.losses + 'L'));
+
+      const grid = el('div', 'stat-grid');
+      [
+        ['PPG', summary.per.pts], ['RPG', summary.per.reb], ['APG', summary.per.ast],
+        ['SPG', summary.per.stl], ['BPG', summary.per.blk], ['TOPG', summary.per.tov],
+        ['MPG', summary.per.min]
+      ].forEach(pair => {
+        const tile = el('div', 'stat-tile');
+        tile.appendChild(el('div', 'stat-tile-value', formatStatAvg(pair[1])));
+        tile.appendChild(el('div', 'stat-tile-label', pair[0]));
+        grid.appendChild(tile);
+      });
+      avgBlock.appendChild(grid);
+
+      const shootingGrid = el('div', 'stat-grid');
+      [
+        ['FG%', summary.pcts.fg], ['3PT%', summary.pcts.tp],
+        ['FT%', summary.pcts.ft], ['TS%', summary.pcts.ts]
+      ].forEach(pair => {
+        const tile = el('div', 'stat-tile');
+        tile.appendChild(el('div', 'stat-tile-value', formatPctStat(pair[1])));
+        tile.appendChild(el('div', 'stat-tile-label', pair[0]));
+        shootingGrid.appendChild(tile);
+      });
+      avgBlock.appendChild(shootingGrid);
+      avgBlock.appendChild(el('div', 'st-note',
+        'Shooting percentages come from season totals (' + summary.totals.fgm + '/' + summary.totals.fga + ' FG, '
+        + summary.totals.tpm + '/' + summary.totals.tpa + ' 3PT, ' + summary.totals.ftm + '/' + summary.totals.fta
+        + ' FT), not from averaging each game’s percentage.'));
+      gamesCard.appendChild(avgBlock);
+
+      const highBlock = el('div', 'st-block');
+      highBlock.appendChild(el('div', 'st-block-label', 'Season highs'));
+      HIGH_STATS.forEach(stat => {
+        const high = highs[stat.id];
+        if (!high) return;
+        const row = el('div', 'st-row-top');
+        row.appendChild(el('span', 'st-row-label', stat.label));
+        const value = el('span', 'st-row-value');
+        value.appendChild(document.createTextNode(String(high.value)));
+        value.appendChild(el('span', 'st-row-count',
+          (high.game.opponent ? 'vs ' + high.game.opponent : '') + ' · ' + formatDayTitle(high.game.date)));
+        row.appendChild(value);
+        highBlock.appendChild(row);
+      });
+      gamesCard.appendChild(highBlock);
+
+      const chartBlock = el('div', 'st-block');
+      chartBlock.appendChild(el('div', 'st-block-label', 'Points per game'));
+      chartBlock.appendChild(buildLineChart({
+        points: played.map(g => ({
+          value: g.stats.pts,
+          label: (g.opponent ? 'vs ' + g.opponent : formatDayTitle(g.date)),
+          axisLabel: shortDate(g.date)
+        })),
+        formatValue: v => v + ' pts',
+        ariaLabel: 'Points per game over the season'
+      }));
+      gamesCard.appendChild(chartBlock);
+
+      const tsPoints = played
+        .map(g => ({ game: g, ts: gamePercentages(g.stats).ts }))
+        .filter(row => row.ts !== null);
+      const tsBlock = el('div', 'st-block');
+      tsBlock.appendChild(el('div', 'st-block-label', 'True shooting % per game'));
+      tsBlock.appendChild(buildLineChart({
+        points: tsPoints.map(row => ({
+          value: row.ts,
+          label: (row.game.opponent ? 'vs ' + row.game.opponent : formatDayTitle(row.game.date)),
+          axisLabel: shortDate(row.game.date)
+        })),
+        formatValue: v => v.toFixed(1) + '%',
+        formatAxis: v => Math.round(v) + '%',
+        ariaLabel: 'True shooting percentage per game over the season'
+      }));
+      gamesCard.appendChild(tsBlock);
+    }
+
+    const logBlock = el('div', 'st-block');
+    logBlock.appendChild(el('div', 'st-block-label', 'Game log'));
+    if (!games.length) {
+      logBlock.appendChild(el('div', 'empty-state', 'No games match these filters.'));
+    }
+    games.slice().reverse().forEach(game => logBlock.appendChild(renderGameLogEntry(game, highs)));
+    gamesCard.appendChild(logBlock);
+  }
+
+  function shortDate(dateKey) {
+    return new Date(dateKey + 'T00:00:00Z')
+      .toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  }
+
+  function startNewSeason() {
+    const seasons = loadSeasons();
+    const suggested = new Date(Date.now()).getUTCFullYear() + ' Season';
+    const name = window.prompt('Name this season', seasons.length ? suggested : suggested);
+    if (name === null) return;
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const season = { id: uid(), name: trimmed, startedAt: Date.now() };
+    seasons.push(season);
+    saveSeasons(seasons);
+    saveActiveSeasonId(season.id);
+    gameSeasonFilter = season.id;
+    render();
+  }
+
+  function renderGameLogEntry(game, highs) {
+    const wrap = el('div', 'game-entry');
+    const expanded = expandedGames.has(game.id);
+
+    const header = el('button', 'game-entry-head');
+    header.type = 'button';
+    header.addEventListener('click', () => {
+      if (expanded) expandedGames.delete(game.id);
+      else expandedGames.add(game.id);
+      render();
+    });
+
+    const left = el('div', 'game-entry-left');
+    const title = el('div', 'game-entry-title', (game.opponent ? 'vs ' + game.opponent : 'Game'));
+    left.appendChild(title);
+    left.appendChild(el('div', 'game-entry-meta',
+      shortDate(game.date) + ' · ' + gameTypeLabel(game.type, true) + ' · ' + seasonName(game.seasonId)));
+    header.appendChild(left);
+
+    const right = el('div', 'game-entry-right');
+    if (game.played && game.stats) {
+      right.appendChild(el('div', 'game-entry-pts', game.stats.pts + ' PTS'));
+      right.appendChild(el('div', 'game-entry-line',
+        gameRebounds(game.stats) + ' REB · ' + game.stats.ast + ' AST'));
+    } else {
+      right.appendChild(el('div', 'game-entry-line', 'Scheduled'));
+    }
+    if (game.result) {
+      right.appendChild(el('span', 'cal-game-result ' + game.result, game.result === 'win' ? 'W' : 'L'));
+    }
+    header.appendChild(right);
+    wrap.appendChild(header);
+
+    const holdsHigh = HIGH_STATS.filter(stat => {
+      const high = highs[stat.id];
+      return high && high.game.id === game.id;
+    });
+    if (holdsHigh.length) {
+      const tags = el('div', 'game-high-tags');
+      holdsHigh.forEach(stat => tags.appendChild(el('span', 'game-high-tag', 'Season high: ' + stat.label)));
+      wrap.appendChild(tags);
+    }
+
+    if (expanded) {
+      if (game.played && game.stats) {
+        const pcts = gamePercentages(game.stats);
+        const box = el('div', 'box-score');
+        STAT_FIELDS.forEach(field => {
+          const cell = el('div', 'box-cell');
+          cell.appendChild(el('div', 'box-cell-value', String(game.stats[field.id] || 0)));
+          cell.appendChild(el('div', 'box-cell-label', field.short));
+          box.appendChild(cell);
+        });
+        wrap.appendChild(box);
+
+        const pctRow = el('div', 'stat-grid');
+        [['FG%', pcts.fg], ['3PT%', pcts.tp], ['FT%', pcts.ft], ['TS%', pcts.ts]].forEach(pair => {
+          const tile = el('div', 'stat-tile');
+          tile.appendChild(el('div', 'stat-tile-value', formatPctStat(pair[1])));
+          tile.appendChild(el('div', 'stat-tile-label', pair[0]));
+          pctRow.appendChild(tile);
+        });
+        wrap.appendChild(pctRow);
+      }
+
+      const actions = el('div', 'cal-game-actions');
+      const editBtn = el('button', 'cal-mini-btn', game.played ? 'Edit box score' : 'Add box score');
+      editBtn.type = 'button';
+      editBtn.addEventListener('click', () => {
+        editingGameId = editingGameId === game.id ? null : game.id;
+        render();
+      });
+      actions.appendChild(editBtn);
+      const removeBtn = el('button', 'cal-mini-btn danger', 'Remove game');
+      removeBtn.type = 'button';
+      removeBtn.addEventListener('click', () => {
+        if (!window.confirm('Remove this game' + (game.played ? ' and its box score' : '') + '?')) return;
+        saveGames(loadGames().filter(g => g.id !== game.id));
+        expandedGames.delete(game.id);
+        if (editingGameId === game.id) editingGameId = null;
+        render();
+      });
+      actions.appendChild(removeBtn);
+      wrap.appendChild(actions);
+    }
+
+    if (editingGameId === game.id) wrap.appendChild(renderStatForm(game));
+    return wrap;
+  }
+
+  function renderStatForm(game) {
+    const form = el('form', 'stat-form');
+    form.id = 'stat-form';
+    form.appendChild(el('div', 'cal-log-label',
+      'Box score · ' + (game.opponent ? 'vs ' + game.opponent : 'Game') + ' · ' + shortDate(game.date)));
+
+    const inputs = {};
+    const grid = el('div', 'stat-input-grid');
+    STAT_FIELDS.forEach(field => {
+      const cell = el('div', 'stat-input');
+      const label = document.createElement('label');
+      label.setAttribute('for', 'stat-' + field.id);
+      label.textContent = field.short;
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.id = 'stat-' + field.id;
+      input.inputMode = 'numeric';
+      input.min = '0';
+      input.value = game.stats ? String(game.stats[field.id] || 0) : '0';
+      input.setAttribute('aria-label', field.label);
+      inputs[field.id] = input;
+      cell.appendChild(label);
+      cell.appendChild(input);
+      grid.appendChild(cell);
+    });
+    form.appendChild(grid);
+
+    const live = el('div', 'stat-grid');
+    const liveTiles = {};
+    [['FG%', 'fg'], ['3PT%', 'tp'], ['FT%', 'ft'], ['TS%', 'ts']].forEach(pair => {
+      const tile = el('div', 'stat-tile');
+      const value = el('div', 'stat-tile-value', '—');
+      liveTiles[pair[1]] = value;
+      tile.appendChild(value);
+      tile.appendChild(el('div', 'stat-tile-label', pair[0]));
+      live.appendChild(tile);
+    });
+    form.appendChild(live);
+
+    function readStats() {
+      const stats = {};
+      STAT_FIELDS.forEach(field => {
+        const parsed = parseInt(inputs[field.id].value, 10);
+        stats[field.id] = Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+      });
+      return stats;
+    }
+
+    function refreshLive() {
+      const pcts = gamePercentages(readStats());
+      liveTiles.fg.textContent = formatPctStat(pcts.fg);
+      liveTiles.tp.textContent = formatPctStat(pcts.tp);
+      liveTiles.ft.textContent = formatPctStat(pcts.ft);
+      liveTiles.ts.textContent = formatPctStat(pcts.ts);
+    }
+    STAT_FIELDS.forEach(field => inputs[field.id].addEventListener('input', refreshLive));
+    refreshLive();
+
+    const resultRow = el('div', 'result-row');
+    resultRow.appendChild(el('span', 'stat-input-caption', 'Result'));
+    let chosenResult = game.result || null;
+    const resultButtons = {};
+    [['win', 'Win'], ['loss', 'Loss']].forEach(pair => {
+      const btn = el('button', 'result-btn' + (chosenResult === pair[0] ? ' active' : ''), pair[1]);
+      btn.type = 'button';
+      btn.id = 'result-' + pair[0];
+      btn.addEventListener('click', () => {
+        chosenResult = pair[0];
+        Object.keys(resultButtons).forEach(key => {
+          resultButtons[key].classList.toggle('active', key === chosenResult);
+        });
+        error.textContent = '';
+      });
+      resultButtons[pair[0]] = btn;
+      resultRow.appendChild(btn);
+    });
+    form.appendChild(resultRow);
+
+    const error = el('div', 'stat-error');
+    error.id = 'stat-error';
+    form.appendChild(error);
+
+    const actions = el('div', 'cal-log-row');
+    const cancel = el('button', 'secondary', 'Cancel');
+    cancel.type = 'button';
+    cancel.addEventListener('click', () => {
+      editingGameId = null;
+      render();
+    });
+    const submit = el('button', 'primary', 'Save box score');
+    submit.type = 'submit';
+    submit.id = 'stat-save';
+    actions.appendChild(cancel);
+    actions.appendChild(submit);
+    form.appendChild(actions);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const stats = readStats();
+
+      const bad = MADE_ATTEMPT_PAIRS.find(pair => stats[pair[0]] > stats[pair[1]]);
+      if (bad) {
+        error.textContent = 'Made ' + bad[2] + ' (' + stats[bad[0]] + ') can’t exceed attempts (' + stats[bad[1]] + ').';
+        return;
+      }
+      if (!chosenResult) {
+        error.textContent = 'Pick a result — win or loss.';
+        return;
+      }
+
+      const games = loadGames();
+      const target = games.find(g => g.id === game.id);
+      if (!target) return;
+      target.stats = stats;
+      target.result = chosenResult;
+      target.played = true;
+      saveGames(games);
+      editingGameId = null;
+      expandedGames.add(game.id);
+      render();
+    });
+
+    return form;
+  }
+
   function render() {
     const pir = computePIR();
     renderCalendar(pir);
     renderPIR(pir);
+    renderGames();
     renderSkillTests();
     renderChips();
 
