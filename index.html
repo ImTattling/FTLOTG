@@ -462,6 +462,30 @@
 
   .comp-block .st-note { margin-top: 2px; }
 
+  .breakdown-row {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breakdown-row:last-child { border-bottom: none; }
+
+  .breakdown-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px 12px;
+    margin-top: 4px;
+    font-size: 0.74rem;
+    color: var(--text-dim);
+  }
+
+  .breakdown-stat strong { color: var(--text); font-size: 0.8rem; }
+
+  .org-field { flex-direction: column; gap: 6px; }
+  .org-field > * { flex: none; width: 100%; }
+  .game-org-fields { display: flex; flex-direction: column; gap: 8px; }
+
+  #game-scope-chips { margin: 12px 0 2px; }
+
   .game-entry {
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -1973,8 +1997,59 @@
     { id: 'blk', label: 'Blocks' }
   ];
 
+  const GAME_ORGS_KEY = 'workout-tracker:game-orgs';
+
+  // Pickup and scrimmage runs aren't organised, so they skip league/team.
+  function typeUsesOrgFields(typeId) {
+    return typeId !== 'pickup' && typeId !== 'scrimmage';
+  }
+
+  function loadGameOrgs() {
+    try {
+      const raw = localStorage.getItem(GAME_ORGS_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (e) {
+      return {};
+    }
+  }
+
+  function saveGameOrgs(orgs) {
+    try {
+      localStorage.setItem(GAME_ORGS_KEY, JSON.stringify(orgs));
+    } catch (e) {}
+  }
+
+  function rememberedOrgs(typeId, field) {
+    const entry = loadGameOrgs()[typeId];
+    const list = entry && Array.isArray(entry[field]) ? entry[field] : [];
+    // Names already on saved games count as remembered too, so a game
+    // logged before this existed still offers its league next time.
+    const fromGames = loadGames()
+      .filter(g => g.type === typeId && g[field === 'leagues' ? 'league' : 'team'])
+      .map(g => g[field === 'leagues' ? 'league' : 'team']);
+    const seen = new Set();
+    return list.concat(fromGames).filter(name => {
+      const key = name.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).sort((a, b) => a.localeCompare(b));
+  }
+
+  function rememberOrg(typeId, field, value) {
+    if (!value) return;
+    const orgs = loadGameOrgs();
+    if (!orgs[typeId]) orgs[typeId] = { leagues: [], teams: [] };
+    if (!Array.isArray(orgs[typeId][field])) orgs[typeId][field] = [];
+    const exists = orgs[typeId][field].some(name => name.toLowerCase() === value.toLowerCase());
+    if (!exists) orgs[typeId][field].push(value);
+    saveGameOrgs(orgs);
+  }
+
   let gameSeasonFilter = 'all';
-  let gameTypeFilter = 'all';
+  // Competitive leads, since that's the play that matters most.
+  let gameScope = 'competitive';
   let editingGameId = null;
   let markingGameDay = null;
   const expandedGames = new Set();
@@ -2090,26 +2165,66 @@
       .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
   }
 
-  function matchesTypeFilter(game) {
-    if (gameTypeFilter === 'all') return true;
-    if (gameTypeFilter === 'competitive') return isCompetitiveType(game.type);
-    return game.type === gameTypeFilter;
+  function matchesScope(game, scope) {
+    if (scope === 'career') return true;
+    if (scope === 'competitive') return isCompetitiveType(game.type);
+    return game.type === scope;
+  }
+
+  function gamesInScope(scope) {
+    return gamesInSelectedSeason().filter(g => matchesScope(g, scope || gameScope));
   }
 
   function filteredGames() {
-    return gamesInSelectedSeason().filter(matchesTypeFilter);
+    return gamesInScope(gameScope);
   }
 
-  // Competitive games in the selected season, independent of the type
-  // filter, so the comparison line stays available while viewing pickup.
+  // Competitive games in the selected season, independent of the scope,
+  // so the comparison line stays available while viewing pickup.
   function competitiveGames() {
     return gamesInSelectedSeason().filter(g => isCompetitiveType(g.type));
   }
 
-  // Only the combined Competitive filter restates the line exactly; a single
+  // Only the combined Competitive scope restates the line exactly; a single
   // tier like Pro is still worth comparing against the competitive baseline.
   function typeFilterIsCompetitiveOnly() {
-    return gameTypeFilter === 'competitive';
+    return gameScope === 'competitive';
+  }
+
+  function scopeLabel(scope) {
+    if (scope === 'career') return 'Career';
+    if (scope === 'competitive') return 'Competitive';
+    return gameTypeLabel(scope);
+  }
+
+  function orgValue(game, field) {
+    const value = game[field];
+    return value && String(value).trim() ? String(value).trim() : null;
+  }
+
+  // Groups games by league or team, keeping an "Unspecified" bucket for
+  // games saved before those fields existed.
+  function groupGamesBy(games, field) {
+    const buckets = new Map();
+    games.forEach(game => {
+      const key = orgValue(game, field) || '— Unspecified';
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(game);
+    });
+    return [...buckets.entries()]
+      .map(entry => ({ name: entry[0], games: entry[1], summary: aggregateGames(entry[1]) }))
+      .filter(row => row.summary)
+      .sort((a, b) => b.summary.games - a.summary.games || a.name.localeCompare(b.name));
+  }
+
+  function groupGamesByType(games) {
+    return GAME_TYPES
+      .map(type => ({
+        name: type.label,
+        games: games.filter(g => g.type === type.id),
+        summary: aggregateGames(games.filter(g => g.type === type.id))
+      }))
+      .filter(row => row.summary);
   }
 
   // Season percentages come from summed totals, never from averaging the
@@ -2477,7 +2592,11 @@
       row.appendChild(top);
 
       const meta = el('div', 'cal-game-meta');
-      meta.textContent = gameTypeLabel(game.type) + ' · ' + seasonName(game.seasonId);
+      const bits = [gameTypeLabel(game.type)];
+      if (orgValue(game, 'league')) bits.push(orgValue(game, 'league'));
+      if (orgValue(game, 'team')) bits.push(orgValue(game, 'team'));
+      bits.push(seasonName(game.seasonId));
+      meta.textContent = bits.join(' · ');
       row.appendChild(meta);
 
       if (game.played && game.stats) {
@@ -2555,6 +2674,29 @@
     typeRow.appendChild(typeSelect);
     form.appendChild(typeRow);
 
+    const orgWrap = el('div', 'game-org-fields');
+    orgWrap.id = 'game-org-fields';
+    form.appendChild(orgWrap);
+
+    const leagueField = buildOrgField('league', 'League or event');
+    const teamField = buildOrgField('team', 'Team');
+
+    function refreshOrgFields() {
+      orgWrap.innerHTML = '';
+      if (!typeUsesOrgFields(typeSelect.value)) {
+        orgWrap.appendChild(el('div', 'cal-game-season',
+          gameTypeLabel(typeSelect.value) + ' games skip league and team.'));
+        return;
+      }
+      leagueField.refresh(typeSelect.value);
+      teamField.refresh(typeSelect.value);
+      orgWrap.appendChild(leagueField.el);
+      orgWrap.appendChild(teamField.el);
+    }
+
+    typeSelect.addEventListener('change', refreshOrgFields);
+    refreshOrgFields();
+
     form.appendChild(el('div', 'cal-game-season', 'Season: ' + season.name));
 
     const actions = el('div', 'cal-log-row');
@@ -2571,28 +2713,115 @@
     actions.appendChild(submit);
     form.appendChild(actions);
 
+    const error = el('div', 'stat-error');
+    error.id = 'game-error';
+    form.appendChild(error);
+
     form.addEventListener('submit', e => {
       e.preventDefault();
       const name = opponent.value.trim();
       if (!name) return;
+      const type = typeSelect.value;
+      const usesOrgs = typeUsesOrgFields(type);
+      const league = usesOrgs ? leagueField.value() : null;
+      const team = usesOrgs ? teamField.value() : null;
+
+      if (usesOrgs && (!league || !team)) {
+        error.textContent = 'Add a league or event name and a team for ' + gameTypeLabel(type) + ' games.';
+        return;
+      }
+
       const games = loadGames();
       games.push({
         id: uid(),
         seasonId: season.id,
         date: dateKey,
         opponent: name,
-        type: typeSelect.value,
+        type,
+        league,
+        team,
         played: false,
         result: null,
         stats: null,
         createdAt: Date.now()
       });
       saveGames(games);
+      if (usesOrgs) {
+        rememberOrg(type, 'leagues', league);
+        rememberOrg(type, 'teams', team);
+      }
       markingGameDay = null;
       render();
     });
 
     return form;
+  }
+
+  // Remembered names become a picker; the first entry for a type is just a
+  // text box. "Add new" switches back to typing at any point.
+  function buildOrgField(field, label) {
+    const listKey = field === 'league' ? 'leagues' : 'teams';
+    const wrap = el('div', 'cal-log-row org-field');
+    const select = document.createElement('select');
+    select.id = 'game-' + field + '-select';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = 'game-' + field;
+    input.placeholder = label;
+    input.autocomplete = 'off';
+
+    let usingNew = true;
+
+    function sync() {
+      const showInput = usingNew;
+      select.hidden = select.options.length <= 1;
+      input.hidden = !showInput && !select.hidden;
+    }
+
+    select.addEventListener('change', () => {
+      usingNew = select.value === '__new__';
+      if (usingNew) {
+        input.value = '';
+        sync();
+        input.focus();
+      } else {
+        sync();
+      }
+    });
+
+    wrap.appendChild(select);
+    wrap.appendChild(input);
+
+    return {
+      el: wrap,
+      refresh(typeId) {
+        const remembered = rememberedOrgs(typeId, listKey);
+        select.innerHTML = '';
+        remembered.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          select.appendChild(opt);
+        });
+        const newOpt = document.createElement('option');
+        newOpt.value = '__new__';
+        newOpt.textContent = remembered.length ? '+ New ' + label.toLowerCase() + '…' : label;
+        select.appendChild(newOpt);
+
+        if (remembered.length) {
+          select.value = remembered[0];
+          usingNew = false;
+        } else {
+          select.value = '__new__';
+          usingNew = true;
+        }
+        sync();
+      },
+      value() {
+        if (select.hidden || usingNew) return input.value.trim() || null;
+        return select.value === '__new__' ? (input.value.trim() || null) : select.value;
+      }
+    };
   }
 
   function renderDayLogForm(dateKey, isToday) {
@@ -3759,29 +3988,42 @@
     });
     controls.appendChild(seasonSelect);
 
-    const typeSelect = document.createElement('select');
-    typeSelect.id = 'game-type-filter';
-    const allTypeOpt = document.createElement('option');
-    allTypeOpt.value = 'all';
-    allTypeOpt.textContent = 'All game types';
-    typeSelect.appendChild(allTypeOpt);
-    const competitiveOpt = document.createElement('option');
-    competitiveOpt.value = 'competitive';
-    competitiveOpt.textContent = 'Competitive (Pro-Am, Semi-Pro, Pro)';
-    typeSelect.appendChild(competitiveOpt);
-    GAME_TYPES.forEach(type => {
-      const opt = document.createElement('option');
-      opt.value = type.id;
-      opt.textContent = type.label;
-      typeSelect.appendChild(opt);
-    });
-    typeSelect.value = gameTypeFilter;
-    typeSelect.addEventListener('change', () => {
-      gameTypeFilter = typeSelect.value;
-      render();
-    });
-    controls.appendChild(typeSelect);
     gamesCard.appendChild(controls);
+
+    // Scope chips: Competitive and Career always, then each type that has
+    // games of its own.
+    const scopes = [
+      { id: 'competitive', label: 'Competitive' },
+      { id: 'career', label: 'Career' }
+    ].concat(GAME_TYPES
+      .filter(type => gamesInSelectedSeason().some(g => g.type === type.id))
+      .map(type => ({ id: type.id, label: type.label })));
+
+    if (!scopes.some(s => s.id === gameScope)) gameScope = 'competitive';
+    if (gameScope === 'competitive' && !gamesInScope('competitive').length
+        && gamesInSelectedSeason().length) {
+      gameScope = 'career';
+    }
+
+    const scopeRow = el('div', 'filter-chips');
+    scopeRow.id = 'game-scope-chips';
+    scopes.forEach(scope => {
+      const count = gamesInScope(scope.id).length;
+      const chip = el('button', 'chip' + (gameScope === scope.id ? ' active' : ''));
+      chip.type = 'button';
+      chip.dataset.scope = scope.id;
+      chip.textContent = scope.label + (count ? ' · ' + count : '');
+      chip.addEventListener('click', () => {
+        gameScope = scope.id;
+        render();
+      });
+      scopeRow.appendChild(chip);
+    });
+    gamesCard.appendChild(scopeRow);
+
+    // Keep the selected scope visible without scrolling the page itself.
+    const activeChip = scopeRow.querySelector('.chip.active');
+    if (activeChip) scopeRow.scrollLeft = Math.max(0, activeChip.offsetLeft - 12);
 
     const seasonRow = el('div', 'game-season-row');
     seasonRow.appendChild(el('span', 'game-season-active', 'New games go to: ' + ensureActiveSeason().name));
@@ -3801,7 +4043,7 @@
     if (summary) {
       const avgBlock = el('div', 'st-block');
       avgBlock.appendChild(el('div', 'st-block-label',
-        'Season averages · ' + summary.games + (summary.games === 1 ? ' game' : ' games')
+        scopeLabel(gameScope) + ' averages · ' + summary.games + (summary.games === 1 ? ' game' : ' games')
         + ' · ' + summary.wins + 'W–' + summary.losses + 'L'));
 
       const grid = el('div', 'stat-grid');
@@ -3834,6 +4076,7 @@
         + ' FT), not from averaging each game’s percentage.'));
       gamesCard.appendChild(avgBlock);
       gamesCard.appendChild(renderCompetitiveLine());
+      renderScopeBreakdowns(games).forEach(block => gamesCard.appendChild(block));
 
       const highBlock = el('div', 'st-block');
       highBlock.appendChild(el('div', 'st-block-label', 'Season highs'));
@@ -3885,10 +4128,63 @@
     const logBlock = el('div', 'st-block');
     logBlock.appendChild(el('div', 'st-block-label', 'Game log'));
     if (!games.length) {
-      logBlock.appendChild(el('div', 'empty-state', 'No games match these filters.'));
+      logBlock.appendChild(el('div', 'empty-state',
+        'No ' + scopeLabel(gameScope).toLowerCase() + ' games in this season yet.'));
     }
     games.slice().reverse().forEach(game => logBlock.appendChild(renderGameLogEntry(game, highs)));
     gamesCard.appendChild(logBlock);
+  }
+
+  // Each scope decomposes the way that scope is actually made up: a type
+  // splits into its leagues and teams, while Competitive and Career split
+  // into the types feeding them.
+  function renderScopeBreakdowns(games) {
+    const blocks = [];
+    const add = (label, rows) => {
+      if (rows.length < 2) return; // a single row just restates the block above
+      const block = el('div', 'st-block');
+      block.appendChild(el('div', 'st-block-label', label));
+      rows.forEach(row => block.appendChild(breakdownRow(row)));
+      blocks.push(block);
+    };
+
+    if (gameScope === 'career' || gameScope === 'competitive') {
+      add('By game type', groupGamesByType(games));
+    }
+    if (gameScope === 'competitive') {
+      add('By league or event', groupGamesBy(games, 'league'));
+    }
+    if (gameScope !== 'career' && gameScope !== 'competitive' && typeUsesOrgFields(gameScope)) {
+      add('By league or event', groupGamesBy(games, 'league'));
+      add('By team', groupGamesBy(games, 'team'));
+    }
+    return blocks;
+  }
+
+  function breakdownRow(row) {
+    const wrap = el('div', 'breakdown-row');
+    const top = el('div', 'st-row-top');
+    top.appendChild(el('span', 'st-row-label', row.name));
+    top.appendChild(el('span', 'st-row-value',
+      row.summary.games + (row.summary.games === 1 ? ' game' : ' games')
+      + ' · ' + row.summary.wins + 'W–' + row.summary.losses + 'L'));
+    wrap.appendChild(top);
+
+    const line = el('div', 'breakdown-stats');
+    [
+      ['PPG', formatStatAvg(row.summary.per.pts)],
+      ['RPG', formatStatAvg(row.summary.per.reb)],
+      ['APG', formatStatAvg(row.summary.per.ast)],
+      ['FG%', formatPctStat(row.summary.pcts.fg)],
+      ['TS%', formatPctStat(row.summary.pcts.ts)]
+    ].forEach(pair => {
+      const item = el('span', 'breakdown-stat');
+      item.appendChild(el('strong', null, pair[1]));
+      item.appendChild(document.createTextNode(' ' + pair[0]));
+      line.appendChild(item);
+    });
+    wrap.appendChild(line);
+    return wrap;
   }
 
   // A fixed Pro-Am/Semi-Pro/Pro line shown alongside whatever filter is
@@ -3965,8 +4261,11 @@
     const left = el('div', 'game-entry-left');
     const title = el('div', 'game-entry-title', (game.opponent ? 'vs ' + game.opponent : 'Game'));
     left.appendChild(title);
-    left.appendChild(el('div', 'game-entry-meta',
-      shortDate(game.date) + ' · ' + gameTypeLabel(game.type, true) + ' · ' + seasonName(game.seasonId)));
+    const metaBits = [shortDate(game.date), gameTypeLabel(game.type, true)];
+    if (orgValue(game, 'league')) metaBits.push(orgValue(game, 'league'));
+    if (orgValue(game, 'team')) metaBits.push(orgValue(game, 'team'));
+    metaBits.push(seasonName(game.seasonId));
+    left.appendChild(el('div', 'game-entry-meta', metaBits.join(' · ')));
     header.appendChild(left);
 
     const right = el('div', 'game-entry-right');
