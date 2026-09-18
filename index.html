@@ -76,6 +76,257 @@
     margin-top: 16px;
   }
 
+  .cal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .cal-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cal-streak {
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 7px;
+    border-radius: 3px;
+    background: var(--done-bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .cal-nav { display: flex; gap: 6px; flex: 0 0 auto; }
+
+  .cal-nav-btn {
+    appearance: none;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .cal-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+
+  .cal-dow {
+    text-align: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    padding-bottom: 4px;
+  }
+
+  .cal-day {
+    appearance: none;
+    position: relative;
+    min-height: 46px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 4px 2px 3px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 3px;
+    font-family: inherit;
+    color: var(--text);
+  }
+
+  .cal-day.outside { opacity: 0.4; }
+  .cal-day.streak { background: var(--done-bg); }
+
+  .cal-day.today {
+    border-color: var(--accent);
+    border-width: 2px;
+    padding: 3px 1px 2px;
+  }
+
+  .cal-day.selected {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .cal-num {
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .cal-day.today .cal-num { color: var(--accent); }
+
+  .cal-marks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    min-height: 10px;
+  }
+
+  .cal-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .cal-rest {
+    width: 11px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--text-dim);
+    display: block;
+  }
+
+  .cal-missed {
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--danger);
+    line-height: 1;
+  }
+
+  .cal-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    margin-top: 10px;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+  }
+
+  .cal-legend span { display: inline-flex; align-items: center; gap: 4px; }
+
+  .cal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .cal-toggle {
+    appearance: none;
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .cal-detail {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .cal-detail-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .cal-detail-date { font-size: 0.92rem; font-weight: 700; }
+
+  .cal-detail-pir {
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .cal-detail-pir.up { color: var(--accent); }
+  .cal-detail-pir.down { color: var(--danger); }
+  .cal-detail-pir.flat { color: var(--text-dim); }
+
+  .cal-detail-status {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 3px;
+    line-height: 1.45;
+  }
+
+  .cal-detail-list {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cal-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 9px;
+  }
+
+  .cal-detail-item .cal-dot { width: 7px; height: 7px; flex: 0 0 auto; }
+  .cal-detail-name { font-weight: 600; flex: 1; min-width: 0; word-break: break-word; }
+  .cal-detail-meta { color: var(--text-dim); font-size: 0.76rem; white-space: nowrap; }
+
+  .cal-log {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .cal-log-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .cal-log-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .cal-log-row > * { flex: 1; min-width: 0; }
+
+  .cal-locked {
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    line-height: 1.45;
+  }
+
   .pir-card {
     text-align: center;
   }
@@ -830,6 +1081,8 @@
 </header>
 
 <main>
+  <div class="card" id="calendar-card"></div>
+
   <div class="card pir-card">
     <div class="pir-label">Projected Improvement Rating</div>
     <div class="pir-score" id="pir-score">0</div>
@@ -987,6 +1240,7 @@
   const restDayBtn = document.getElementById('rest-day-btn');
   const restDayStatus = document.getElementById('rest-day-status');
   const skillTestCard = document.getElementById('skill-test-card');
+  const calendarCard = document.getElementById('calendar-card');
 
   CATEGORIES.forEach(c => {
     const opt = document.createElement('option');
@@ -1071,6 +1325,9 @@
         multiplier: 1.0,
         streak: 0,
         history: [],
+        historyByDate: new Map(),
+        streakDates: new Set(),
+        trainingCounts,
         today,
         restDaysUsedThisWeek,
         isTodayRest: restDaySet.has(today),
@@ -1091,35 +1348,51 @@
       const isToday = dKey === today;
       const workoutsToday = trainingCounts.get(dKey) || 0;
 
+      const scoreBefore = score;
+
       if (workoutsToday > 0) {
         streakCount += 1;
         const step = Math.min(streakCount - 1, 10);
         const multiplier = (10 + step) / 10;
         const pointsDelta = (10 + step) * workoutsToday;
         score = Math.max(0, score + pointsDelta);
-        history.push({ date: dKey, score, event: 'workout', multiplier });
+        history.push({ date: dKey, score, event: 'workout', multiplier, delta: score - scoreBefore, workouts: workoutsToday });
       } else if (restDaySet.has(dKey)) {
         const step = streakCount > 0 ? Math.min(streakCount - 1, 10) : 0;
         const multiplier = streakCount > 0 ? (10 + step) / 10 : 1.0;
-        history.push({ date: dKey, score, event: 'rest', multiplier });
+        history.push({ date: dKey, score, event: 'rest', multiplier, delta: 0, workouts: 0 });
       } else if (isToday) {
         // Today isn't over yet — don't penalize until it's actually missed.
         break;
       } else {
         streakCount = 0;
         score = Math.max(0, score - 15);
-        history.push({ date: dKey, score, event: 'missed', multiplier: 1.0 });
+        history.push({ date: dKey, score, event: 'missed', multiplier: 1.0, delta: score - scoreBefore, workouts: 0 });
       }
     }
 
     const finalStep = streakCount > 0 ? Math.min(streakCount - 1, 10) : 0;
     const multiplier = streakCount > 0 ? (10 + finalStep) / 10 : 1.0;
 
+    const historyByDate = new Map();
+    history.forEach(entry => historyByDate.set(entry.date, entry));
+
+    // The trailing run of workout/rest days with no miss — the days the
+    // calendar highlights as the live streak.
+    const streakDates = new Set();
+    for (let i = history.length - 1; i >= 0; i--) {
+      if (history[i].event === 'missed') break;
+      streakDates.add(history[i].date);
+    }
+
     return {
       score,
       multiplier,
       streak: streakCount,
       history,
+      historyByDate,
+      streakDates,
+      trainingCounts,
       today,
       restDaysUsedThisWeek,
       isTodayRest: restDaySet.has(today),
@@ -1327,8 +1600,7 @@
     hitArea.addEventListener('pointerleave', hide);
   }
 
-  function renderPIR() {
-    const pir = computePIR();
+  function renderPIR(pir) {
 
     pirScoreEl.textContent = pir.score;
     pirMultiplierEl.textContent = pir.multiplier.toFixed(1) + 'x';
@@ -1352,6 +1624,358 @@
       restDayBtn.disabled = false;
     }
     restDayStatus.textContent = `${pir.restDaysUsedThisWeek}/${MAX_REST_DAYS_PER_WEEK} rest days used this week`;
+  }
+
+  // ---------- Calendar ----------
+
+  const DOW_LABELS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+  const BACKFILL_DAYS = 1; // today and yesterday only
+
+  let calendarMode = 'week';
+  let calendarAnchor = null;
+  let selectedDay = null;
+
+  function keyToNoonTs(key) {
+    return Date.parse(key + 'T12:00:00Z');
+  }
+
+  function addDaysToKey(key, days) {
+    return epochDayToKey(keyToEpochDay(key) + days);
+  }
+
+  function addMonthsToKey(key, months) {
+    const year = parseInt(key.slice(0, 4), 10);
+    const month = parseInt(key.slice(5, 7), 10) - 1 + months;
+    const target = new Date(Date.UTC(year, month, 1));
+    return target.toISOString().slice(0, 10);
+  }
+
+  function formatMonthTitle(key) {
+    return new Date(key + 'T00:00:00Z')
+      .toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  }
+
+  function formatDayTitle(key) {
+    return new Date(key + 'T00:00:00Z')
+      .toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  }
+
+  function calendarDays(anchorKey) {
+    if (calendarMode === 'week') {
+      const monday = weekKeyOf(anchorKey);
+      return Array.from({ length: 7 }, (_, i) => ({ key: epochDayToKey(monday + i), outside: false }));
+    }
+    const monthStart = anchorKey.slice(0, 7) + '-01';
+    const monthIndex = monthStart.slice(0, 7);
+    const gridStart = weekKeyOf(monthStart);
+    const monthEndEpoch = keyToEpochDay(addMonthsToKey(monthStart, 1)) - 1;
+    const cells = [];
+    let epochDay = gridStart;
+    while (epochDay <= monthEndEpoch || cells.length % 7 !== 0) {
+      const key = epochDayToKey(epochDay);
+      cells.push({ key, outside: key.slice(0, 7) !== monthIndex });
+      epochDay += 1;
+      if (cells.length > 41) break;
+    }
+    return cells;
+  }
+
+  // Backfilling older days would let a missed day be erased after the
+  // fact, so completed workouts can only be logged for today or yesterday.
+  function canLogFor(dateKey, todayKey_) {
+    const diff = keyToEpochDay(todayKey_) - keyToEpochDay(dateKey);
+    return diff >= 0 && diff <= BACKFILL_DAYS;
+  }
+
+  function workoutsOnDay(dateKey) {
+    return workouts
+      .filter(w => w.done && w.completedAt && todayKey(w.completedAt) === dateKey)
+      .sort((a, b) => a.completedAt - b.completedAt);
+  }
+
+  function dayCategories(dateKey) {
+    const present = new Set(workoutsOnDay(dateKey).map(w => w.category || DEFAULT_CATEGORY));
+    return CATEGORIES.filter(c => present.has(c.id));
+  }
+
+  function renderCalendar(pir) {
+    calendarCard.innerHTML = '';
+    const today = pir.today;
+    const anchor = calendarAnchor || today;
+
+    const head = el('div', 'cal-head');
+    const title = el('div', 'cal-title');
+    if (calendarMode === 'week') {
+      const days = calendarDays(anchor);
+      const first = days[0].key;
+      const last = days[6].key;
+      const sameMonth = first.slice(0, 7) === last.slice(0, 7);
+      const fmt = (key, withMonth) => new Date(key + 'T00:00:00Z').toLocaleDateString(undefined,
+        withMonth ? { month: 'short', day: 'numeric', timeZone: 'UTC' } : { day: 'numeric', timeZone: 'UTC' });
+      title.textContent = fmt(first, true) + ' – ' + fmt(last, !sameMonth);
+    } else {
+      title.textContent = formatMonthTitle(anchor);
+    }
+    head.appendChild(title);
+
+    if (pir.streak > 0) {
+      head.appendChild(el('span', 'cal-streak', pir.streak + '-day streak'));
+    }
+
+    const nav = el('div', 'cal-nav');
+    const prev = el('button', 'cal-nav-btn', '‹');
+    prev.type = 'button';
+    prev.id = 'cal-prev';
+    prev.setAttribute('aria-label', 'Previous ' + calendarMode);
+    prev.addEventListener('click', () => {
+      calendarAnchor = calendarMode === 'week' ? addDaysToKey(anchor, -7) : addMonthsToKey(anchor, -1);
+      render();
+    });
+    const next = el('button', 'cal-nav-btn', '›');
+    next.type = 'button';
+    next.id = 'cal-next';
+    next.setAttribute('aria-label', 'Next ' + calendarMode);
+    const nextAnchor = calendarMode === 'week' ? addDaysToKey(anchor, 7) : addMonthsToKey(anchor, 1);
+    const nextStartEpoch = calendarMode === 'week' ? weekKeyOf(nextAnchor) : keyToEpochDay(nextAnchor);
+    next.disabled = nextStartEpoch > keyToEpochDay(today);
+    next.addEventListener('click', () => {
+      calendarAnchor = nextAnchor;
+      render();
+    });
+    nav.appendChild(prev);
+    nav.appendChild(next);
+    head.appendChild(nav);
+    calendarCard.appendChild(head);
+
+    const grid = el('div', 'cal-grid');
+    DOW_LABELS.forEach(label => grid.appendChild(el('div', 'cal-dow', label)));
+
+    calendarDays(anchor).forEach(cell => {
+      const entry = pir.historyByDate.get(cell.key);
+      const isToday = cell.key === today;
+      const isFuture = keyToEpochDay(cell.key) > keyToEpochDay(today);
+
+      const classes = ['cal-day'];
+      if (cell.outside) classes.push('outside');
+      if (pir.streakDates.has(cell.key)) classes.push('streak');
+      if (isToday) classes.push('today');
+      if (selectedDay === cell.key) classes.push('selected');
+
+      const day = el('button', classes.join(' '));
+      day.type = 'button';
+      day.appendChild(el('span', 'cal-num', String(parseInt(cell.key.slice(8), 10))));
+
+      const marks = el('span', 'cal-marks');
+      const cats = dayCategories(cell.key);
+      if (cats.length) {
+        cats.forEach(cat => {
+          const dot = el('span', 'cal-dot');
+          dot.style.background = cat.color;
+          marks.appendChild(dot);
+        });
+      } else if (entry && entry.event === 'rest') {
+        marks.appendChild(el('span', 'cal-rest'));
+      } else if (entry && entry.event === 'missed') {
+        marks.appendChild(el('span', 'cal-missed', '✕'));
+      }
+      day.appendChild(marks);
+
+      const label = [formatDayTitle(cell.key)];
+      if (cats.length) label.push(cats.length + ' workout categories');
+      else if (entry && entry.event === 'rest') label.push('rest day');
+      else if (entry && entry.event === 'missed') label.push('missed');
+      if (isToday) label.push('today');
+      day.setAttribute('aria-label', label.join(', '));
+      if (isFuture) day.disabled = true;
+
+      day.addEventListener('click', () => {
+        selectedDay = selectedDay === cell.key ? null : cell.key;
+        render();
+      });
+      grid.appendChild(day);
+    });
+    calendarCard.appendChild(grid);
+
+    const legend = el('div', 'cal-legend');
+    const dotKey = el('span');
+    const sampleDot = el('span', 'cal-dot');
+    sampleDot.style.background = cssVar('--accent');
+    dotKey.appendChild(sampleDot);
+    dotKey.appendChild(document.createTextNode('Category trained'));
+    const restKey = el('span');
+    restKey.appendChild(el('span', 'cal-rest'));
+    restKey.appendChild(document.createTextNode('Rest day'));
+    const missKey = el('span');
+    missKey.appendChild(el('span', 'cal-missed', '✕'));
+    missKey.appendChild(document.createTextNode('Missed'));
+    legend.appendChild(dotKey);
+    legend.appendChild(restKey);
+    legend.appendChild(missKey);
+    calendarCard.appendChild(legend);
+
+    const actions = el('div', 'cal-actions');
+    const toggle = el('button', 'cal-toggle', calendarMode === 'week' ? 'Expand to month' : 'Collapse to week');
+    toggle.type = 'button';
+    toggle.id = 'cal-toggle';
+    toggle.addEventListener('click', () => {
+      calendarMode = calendarMode === 'week' ? 'month' : 'week';
+      render();
+    });
+    actions.appendChild(toggle);
+    if (calendarAnchor && calendarAnchor !== today) {
+      const todayBtn = el('button', 'cal-toggle', 'Today');
+      todayBtn.type = 'button';
+      todayBtn.id = 'cal-today';
+      todayBtn.addEventListener('click', () => {
+        calendarAnchor = null;
+        render();
+      });
+      actions.appendChild(todayBtn);
+    }
+    calendarCard.appendChild(actions);
+
+    if (selectedDay) calendarCard.appendChild(renderDayDetail(selectedDay, pir));
+  }
+
+  function renderDayDetail(dateKey, pir) {
+    const wrap = el('div', 'cal-detail');
+    const entry = pir.historyByDate.get(dateKey);
+    const dayWorkouts = workoutsOnDay(dateKey);
+    const isToday = dateKey === pir.today;
+
+    const head = el('div', 'cal-detail-head');
+    head.appendChild(el('div', 'cal-detail-date', isToday ? 'Today' : formatDayTitle(dateKey)));
+
+    const pirEl = el('div', 'cal-detail-pir');
+    if (entry) {
+      const delta = entry.delta;
+      pirEl.classList.add(delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat');
+      const sign = delta > 0 ? '+' : delta < 0 ? '−' : '±';
+      pirEl.textContent = sign + Math.abs(delta) + ' PIR';
+    } else {
+      pirEl.classList.add('flat');
+      pirEl.textContent = '—';
+    }
+    head.appendChild(pirEl);
+    wrap.appendChild(head);
+
+    const status = el('div', 'cal-detail-status');
+    if (entry && entry.event === 'workout') {
+      status.textContent = dayWorkouts.length + (dayWorkouts.length === 1 ? ' workout' : ' workouts')
+        + ' · ' + entry.multiplier.toFixed(1) + 'x multiplier · PIR ran to ' + entry.score + '.';
+    } else if (entry && entry.event === 'rest') {
+      status.textContent = 'Rest day — streak held, no points added. PIR stayed at ' + entry.score + '.';
+    } else if (entry && entry.event === 'missed') {
+      status.textContent = 'Missed day — multiplier reset to 1.0x. PIR fell to ' + entry.score + '.';
+    } else if (isToday) {
+      status.textContent = dayWorkouts.length
+        ? 'Logged today. PIR updates as you complete workouts.'
+        : 'Still open — nothing counts against you until the day ends.';
+    } else if (keyToEpochDay(dateKey) > keyToEpochDay(pir.today)) {
+      status.textContent = 'Upcoming.';
+    } else {
+      status.textContent = 'Before PIR tracking started.';
+    }
+    wrap.appendChild(status);
+
+    if (dayWorkouts.length) {
+      const list = el('ul', 'cal-detail-list');
+      dayWorkouts.forEach(w => {
+        const cat = categoryInfo(w.category || DEFAULT_CATEGORY);
+        const item = el('li', 'cal-detail-item');
+        const dot = el('span', 'cal-dot');
+        dot.style.background = cat.color;
+        item.appendChild(dot);
+        item.appendChild(el('span', 'cal-detail-name', w.name));
+        item.appendChild(el('span', 'cal-detail-meta', w.sets + '×' + w.reps));
+        list.appendChild(item);
+      });
+      wrap.appendChild(list);
+    }
+
+    if (canLogFor(dateKey, pir.today)) {
+      wrap.appendChild(renderDayLogForm(dateKey, isToday));
+    } else if (keyToEpochDay(dateKey) < keyToEpochDay(pir.today)) {
+      wrap.appendChild(el('div', 'cal-locked',
+        'You can only log workouts for today or yesterday, so PIR can’t be backfilled on older days.'));
+    }
+
+    return wrap;
+  }
+
+  function renderDayLogForm(dateKey, isToday) {
+    const form = el('form', 'cal-log');
+    form.id = 'cal-log-form';
+    form.appendChild(el('div', 'cal-log-label', 'Log a completed workout for ' + (isToday ? 'today' : 'yesterday')));
+
+    const nameInputEl = document.createElement('input');
+    nameInputEl.type = 'text';
+    nameInputEl.id = 'cal-log-name';
+    nameInputEl.placeholder = 'Exercise';
+    nameInputEl.autocomplete = 'off';
+    nameInputEl.required = true;
+    const nameRow = el('div', 'cal-log-row');
+    nameRow.appendChild(nameInputEl);
+    form.appendChild(nameRow);
+
+    const categoryEl = document.createElement('select');
+    categoryEl.id = 'cal-log-category';
+    CATEGORIES.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.id;
+      opt.textContent = c.label;
+      categoryEl.appendChild(opt);
+    });
+    categoryEl.value = DEFAULT_CATEGORY;
+    const spacer = el('div', 'cal-log-row');
+    spacer.appendChild(categoryEl);
+    form.appendChild(spacer);
+
+    const row = el('div', 'cal-log-row');
+    const setsEl = document.createElement('input');
+    setsEl.type = 'number';
+    setsEl.id = 'cal-log-sets';
+    setsEl.inputMode = 'numeric';
+    setsEl.min = '1';
+    setsEl.placeholder = 'Sets';
+    setsEl.required = true;
+    const repsEl = document.createElement('input');
+    repsEl.type = 'number';
+    repsEl.id = 'cal-log-reps';
+    repsEl.inputMode = 'numeric';
+    repsEl.min = '1';
+    repsEl.placeholder = 'Reps';
+    repsEl.required = true;
+    row.appendChild(setsEl);
+    row.appendChild(repsEl);
+    form.appendChild(row);
+
+    const submit = el('button', 'primary', 'Log workout');
+    submit.type = 'submit';
+    submit.id = 'cal-log-submit';
+    form.appendChild(submit);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = nameInputEl.value.trim();
+      const sets = parseInt(setsEl.value, 10);
+      const reps = parseInt(repsEl.value, 10);
+      if (!name || !sets || !reps) return;
+      workouts.push({
+        id: uid(),
+        name,
+        category: categoryEl.value || DEFAULT_CATEGORY,
+        sets,
+        reps,
+        done: true,
+        createdAt: Date.now(),
+        completedAt: keyToNoonTs(dateKey)
+      });
+      save(workouts);
+      render();
+    });
+
+    return form;
   }
 
   // ---------- Skill tests ----------
@@ -2255,7 +2879,9 @@
   }
 
   function render() {
-    renderPIR();
+    const pir = computePIR();
+    renderCalendar(pir);
+    renderPIR(pir);
     renderSkillTests();
     renderChips();
 
